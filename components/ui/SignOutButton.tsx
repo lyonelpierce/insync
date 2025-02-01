@@ -9,7 +9,7 @@ export const SignOutButton = () => {
     try {
       await signOut();
       // Redirect to your desired page
-      Linking.openURL(Linking.createURL("/(auth)/index"));
+      Linking.openURL(Linking.createURL("/(auth)/landing"));
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling

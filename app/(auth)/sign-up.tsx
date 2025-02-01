@@ -1,4 +1,5 @@
 import * as React from "react";
+import { cn } from "~/lib/utils";
 import { Text, View } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
@@ -6,7 +7,6 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Checkbox } from "~/components/ui/checkbox";
-import { cn } from "~/lib/utils";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -67,18 +67,30 @@ export default function SignUpScreen() {
 
   if (pendingVerification) {
     return (
-      <>
-        <Text>Verify your email</Text>
-        <Input
-          value={code}
-          placeholder="Enter your verification code"
-          onChangeText={(code) => setCode(code)}
-        />
-        {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
-        <Button onPress={onVerifyPress}>
-          <Text>Verify</Text>
-        </Button>
-      </>
+      <View className="flex-1 bg-transparent justify-around items-center h-full gap-4 p-4">
+        <View className="flex flex-col gap-4 w-full justify-center items-center">
+          <Text className="text-white text-4xl font-semibold w-full flex items-center justify-start mb-2">
+            Verify your email
+          </Text>
+          <Input
+            value={code}
+            placeholder="Enter verification code"
+            onChangeText={(code) => setCode(code)}
+            className="w-full bg-transparent border-[#A7A7A7] min-h-16 placeholder:text-[#A7A7A7] rounded-lg text-white"
+          />
+          {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+        </View>
+
+        <View className="flex flex-col gap-4 w-full justify-center items-center">
+          <Button
+            onPress={onVerifyPress}
+            disabled={!code}
+            className="w-full bg-green-600 rounded-lg min-h-16"
+          >
+            <Text className="text-white">Verify Email</Text>
+          </Button>
+        </View>
+      </View>
     );
   }
 

@@ -19,7 +19,11 @@ export default function AuthRoutesLayout() {
           headerShown: false,
           contentStyle: { backgroundColor: "transparent" },
         }}
-      />
+      >
+        <Stack.Screen name="sign-in" />
+        <Stack.Screen name="sign-up" />
+        <Stack.Screen name="landing" />
+      </Stack>
     </View>
   );
 }
