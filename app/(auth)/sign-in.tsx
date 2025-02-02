@@ -52,16 +52,16 @@ export default function Page() {
         <Input
           autoCapitalize="none"
           value={emailAddress}
-          placeholder="Enter email"
+          placeholder="Username or email"
           onChangeText={(email) => setEmailAddress(email)}
-          className="w-full bg-transparent border-[#A7A7A7] min-h-16 placeholder:text-[#A7A7A7] rounded-lg text-white"
+          className="w-full bg-transparent border-[#A7A7A7] min-h-14 placeholder:text-[#A7A7A7] rounded-lg text-white"
         />
         <Input
           value={password}
           placeholder="Enter password"
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
-          className="w-full bg-transparent border-[#A7A7A7] min-h-16 placeholder:text-[#A7A7A7] rounded-lg text-white"
+          className="w-full bg-transparent border-[#A7A7A7] min-h-14 placeholder:text-[#A7A7A7] rounded-lg text-white"
         />
         {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
       </View>
@@ -70,7 +70,7 @@ export default function Page() {
         <Button
           onPress={onSignInPress}
           disabled={!emailAddress || !password}
-          className="w-full min-h-16 bg-green-600 rounded-lg"
+          className="w-full min-h-14 bg-green-600 rounded-lg"
         >
           <Text
             className={cn(

@@ -1,12 +1,12 @@
-import { Tabs, useRouter } from "expo-router";
 import { View } from "react-native";
+import * as Haptics from "expo-haptics";
 import BallBg from "~/components/BallBg";
+import { useUser } from "@clerk/clerk-expo";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
+import { Tabs, useRouter } from "expo-router";
 import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { useUser } from "@clerk/clerk-expo";
-import * as Haptics from "expo-haptics";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
   <View className="bg-gray-300/10 rounded-lg">
