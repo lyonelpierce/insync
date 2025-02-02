@@ -37,12 +37,12 @@ serve(async (req) => {
     );
 
     if (event.type === "user.created") {
-      const { id, email_addresses, image_url } = event.data;
+      const { id, email_addresses, image_url, first_name, last_name } = event.data;
       const email = email_addresses?.[0]?.email_address;
 
       const { error } = await supabase
         .from("users")
-        .insert({ clerk_id: id, email, image_url });
+        .insert({ clerk_id: id, email, image_url, first_name, last_name });
 
       if (error) throw error;
     }

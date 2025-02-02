@@ -1,10 +1,10 @@
 import React from "react";
 import { Stack } from "expo-router";
 import { View } from "react-native";
+import { useRouter } from "expo-router";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
-import { useRouter } from "expo-router";
 
 const _layout = () => {
   const router = useRouter();

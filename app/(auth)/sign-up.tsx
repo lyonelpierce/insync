@@ -4,16 +4,18 @@ import { Text, View } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
+import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 
 export default function SignUpScreen() {
-  const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
+  const { isLoaded, signUp, setActive } = useSignUp();
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
   const [error, setError] = React.useState("");
@@ -28,6 +30,8 @@ export default function SignUpScreen() {
       await signUp.create({
         emailAddress,
         password,
+        firstName,
+        lastName,
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -100,6 +104,23 @@ export default function SignUpScreen() {
         <Text className="text-white text-4xl font-semibold w-full flex items-center justify-start mb-2">
           Create account
         </Text>
+        <View className="flex flex-row w-full items-center gap-2">
+          <Input
+            autoCapitalize="none"
+            value={firstName}
+            placeholder="Enter first name"
+            onChangeText={(firstName) => setFirstName(firstName)}
+            className="bg-transparent border-[#A7A7A7] min-h-16 placeholder:text-[#A7A7A7] rounded-lg w-[49%] text-white"
+          />
+          <Input
+            autoCapitalize="none"
+            value={lastName}
+            placeholder="Enter last name"
+            onChangeText={(lastName) => setLastName(lastName)}
+            className="bg-transparent border-[#A7A7A7] min-h-16 placeholder:text-[#A7A7A7] rounded-lg w-[49%] text-white"
+          />
+        </View>
+
         <Input
           autoCapitalize="none"
           value={emailAddress}
