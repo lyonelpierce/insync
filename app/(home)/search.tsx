@@ -1,9 +1,11 @@
 import { View, Text } from "react-native";
 
-export default function index() {
+const search = () => {
   return (
     <View>
-      <Text>index</Text>
+      <Text>search</Text>
     </View>
   );
-}
+};
+
+export default search;

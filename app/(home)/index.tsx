@@ -1,5 +1,4 @@
 import { useRouter } from "expo-router";
-import BallBg from "~/components/BallBg";
 import { Text, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { SignOutButton } from "~/components/ui/SignOutButton";
@@ -11,7 +10,6 @@ export default function Page() {
 
   return (
     <View className="flex-1 items-center justify-center">
-      <BallBg />
       <SignedIn>
         <Text className="text-white">
           Hello {user?.emailAddresses[0].emailAddress}
