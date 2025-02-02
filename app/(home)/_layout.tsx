@@ -1,8 +1,14 @@
-import { View } from "react-native";
 import { Tabs } from "expo-router";
+import { View } from "react-native";
+import BallBg from "~/components/BallBg";
 import { Ionicons } from "@expo/vector-icons";
 import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
-import BallBg from "~/components/BallBg";
+
+const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
+  <View className="bg-gray-300/10 rounded-full">
+    <Ionicons name="add" size={size} color={color} />
+  </View>
+);
 
 export default function Layout() {
   return (
@@ -41,10 +47,10 @@ export default function Layout() {
           }}
         />
         <Tabs.Screen
-          name="search"
+          name="(modal)/create"
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="search-outline" size={size} color={color} />
+              <CreateTabIcon color={color} size={size} />
             ),
           }}
         />

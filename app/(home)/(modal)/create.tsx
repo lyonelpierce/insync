@@ -1,11 +1,11 @@
 import { View, Text } from "react-native";
 
-const search = () => {
+const create = () => {
   return (
     <View>
-      <Text>search</Text>
+      <Text>create</Text>
     </View>
   );
 };
 
-export default search;
+export default create;
