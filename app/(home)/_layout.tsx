@@ -1,80 +1,51 @@
-import { Tabs } from "expo-router";
+import React from "react";
+import { Stack } from "expo-router";
 import { View } from "react-native";
-import BallBg from "~/components/BallBg";
+import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
-import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
+import { Button } from "~/components/ui/button";
+import { useRouter } from "expo-router";
 
-const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
-  <View className="bg-gray-300/10 rounded-full">
-    <Ionicons name="add" size={size} color={color} />
-  </View>
-);
+const _layout = () => {
+  const router = useRouter();
 
-export default function Layout() {
   return (
-    <View className="flex-1">
-      <BallBg />
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            backgroundColor: "transparent",
-            position: "absolute",
-            elevation: 0,
-            borderTopWidth: 0,
-            bottom: 0,
+    <Stack
+      screenOptions={{
+        contentStyle: { backgroundColor: "white" },
+        headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(modal)/create"
+        options={{
+          presentation: "modal",
+          title: "New Post",
+          headerTitleStyle: {
+            color: "white",
           },
-          sceneStyle: {
-            backgroundColor: "transparent",
-          },
+          headerLeft: () => (
+            <Ionicons
+              name="close"
+              size={24}
+              color="white"
+              onPress={() => router.back()}
+            />
+          ),
+          headerBackground: () => <View className="flex-1 bg-[#393D42]" />,
+          headerRight: () => (
+            <Button
+              className="bg-green-600 rounded-lg"
+              onPress={() => router.back()}
+            >
+              <Text>Post</Text>
+            </Button>
+          ),
         }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="health"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <HeartPulseIcon size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="(modal)/create"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <CreateTabIcon color={color} size={size} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="messages"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <MessageCircleIcon size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="notifications"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons
-                name="notifications-outline"
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-        />
-      </Tabs>
-    </View>
+      />
+    </Stack>
   );
-}
+};
+
+export default _layout;

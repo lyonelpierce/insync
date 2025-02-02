@@ -13,7 +13,7 @@ const index = () => {
 
   if (isLoaded && isSignedIn) {
     console.log("isSignedIn", isSignedIn);
-    return <Redirect href="/(home)" />;
+    return <Redirect href="/(home)/(tabs)" />;
   }
 
   return (
