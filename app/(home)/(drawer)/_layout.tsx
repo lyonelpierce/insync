@@ -45,7 +45,11 @@ const CustomDrawerContent = (props: any) => {
         <Text className="text-[#A7A7A7] text-sm">@{user?.username}</Text>
         <View className="absolute top-0 right-4">
           <Button variant="ghost" size="icon">
-            <PencilIcon size={24} color={"#D9D9D9"} />
+            <PencilIcon
+              size={24}
+              color={"#D9D9D9"}
+              onPress={() => router.push("/(home)/(modal)/editprofile")}
+            />
           </Button>
         </View>
         <View className="absolute top-0 left-4">

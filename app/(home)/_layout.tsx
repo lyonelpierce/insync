@@ -2,10 +2,10 @@ import React from "react";
 import { Stack } from "expo-router";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
+import BallBg from "~/components/BallBg";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
-import BallBg from "~/components/BallBg";
 
 const _layout = () => {
   const router = useRouter();
@@ -51,6 +51,19 @@ const _layout = () => {
           name="(modal)/editprofile"
           options={{
             presentation: "modal",
+            title: "Edit Profile",
+            headerTitleStyle: {
+              color: "white",
+            },
+            headerLeft: () => (
+              <Ionicons
+                name="close"
+                size={24}
+                color="white"
+                onPress={() => router.back()}
+              />
+            ),
+            headerBackground: () => <View className="flex-1 bg-[#393D42]" />,
           }}
         />
       </Stack>
