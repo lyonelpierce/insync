@@ -5,11 +5,11 @@ import { useUser } from "@clerk/clerk-expo";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
+import { Button } from "~/components/ui/button";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
 import { type ParamListBase, useNavigation } from "@react-navigation/native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
   <View className="bg-gray-300/10 rounded-lg">
@@ -31,7 +31,35 @@ export default function Layout() {
       <BallBg />
       <Tabs
         screenOptions={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "InSync",
+          headerTitleStyle: {
+            color: "white",
+          },
+          headerStyle: {
+            backgroundColor: "transparent",
+          },
+          headerLeft: () => (
+            <Button
+              size="icon"
+              style={{ paddingLeft: 24 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Avatar alt="User Avatar">
+                <AvatarImage source={{ uri: user?.imageUrl }} />
+                <AvatarFallback>
+                  <Text>{user?.firstName?.charAt(0)}</Text>
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          ),
+          headerRight: () => (
+            <View style={{ paddingRight: 12 }}>
+              <Button size="icon" variant="ghost">
+                <Ionicons name="search-outline" size={24} color="white" />
+              </Button>
+            </View>
+          ),
           tabBarShowLabel: false,
           tabBarStyle: {
             backgroundColor: "transparent",
@@ -48,28 +76,6 @@ export default function Layout() {
         <Tabs.Screen
           name="index"
           options={{
-            headerShown: true,
-            headerTitle: "InSync",
-            headerTitleStyle: {
-              color: "white",
-            },
-            headerStyle: {
-              backgroundColor: "transparent",
-            },
-            headerLeft: () => (
-              <Button
-                size="icon"
-                style={{ paddingLeft: 24 }}
-                onPress={() => navigation.openDrawer()}
-              >
-                <Avatar alt="User Avatar">
-                  <AvatarImage source={{ uri: user?.imageUrl }} />
-                  <AvatarFallback>
-                    <Text>{user?.firstName?.charAt(0)}</Text>
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            ),
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="home-outline" size={size} color={color} />
             ),
