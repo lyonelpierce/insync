@@ -1,19 +1,31 @@
 import { View } from "react-native";
 import { router } from "expo-router";
-import { useUser } from "@clerk/clerk-expo";
+import * as Linking from "expo-linking";
 import { Drawer } from "expo-router/drawer";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
+import { useClerk, useUser } from "@clerk/clerk-expo";
 import { Separator } from "~/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 
 const CustomDrawerContent = (props: any) => {
+  const { signOut } = useClerk();
   const { user, isLoaded } = useUser();
 
   if (!isLoaded) {
     return <Text>Loading...</Text>;
   }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Redirect to your desired page
+      Linking.openURL(Linking.createURL("/(auth)/landing"));
+    } catch (err) {
+      console.error(JSON.stringify(err, null, 2));
+    }
+  };
 
   return (
     <DrawerContentScrollView {...props}>
@@ -61,7 +73,7 @@ const CustomDrawerContent = (props: any) => {
         )}
         label="Logout"
         labelStyle={{ color: "#FCFCFB", fontSize: 18 }}
-        onPress={() => router.push("/")}
+        onPress={handleSignOut}
       />
     </DrawerContentScrollView>
   );
