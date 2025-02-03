@@ -27,8 +27,8 @@ export default function Layout() {
   }
 
   return (
-    <View className="flex-1">
-      <BallBg />
+    <View className="flex-1 bg-transparent">
+      {/* <BallBg /> */}
       <Tabs
         screenOptions={{
           headerShown: true,
@@ -42,7 +42,8 @@ export default function Layout() {
           headerLeft: () => (
             <Button
               size="icon"
-              style={{ paddingLeft: 24 }}
+              variant="ghost"
+              style={{ marginLeft: 12 }}
               onPress={() => navigation.openDrawer()}
             >
               <Avatar alt="User Avatar">

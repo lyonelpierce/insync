@@ -8,6 +8,7 @@ import { useClerk, useUser } from "@clerk/clerk-expo";
 import { Separator } from "~/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import BallBg from "~/components/BallBg";
 
 const CustomDrawerContent = (props: any) => {
   const { signOut } = useClerk();
@@ -48,7 +49,7 @@ const CustomDrawerContent = (props: any) => {
         )}
         label="Profile"
         labelStyle={{ color: "#FCFCFB", fontSize: 18 }}
-        onPress={() => router.push("/")}
+        onPress={() => router.push("/(home)/(drawer)/profile")}
       />
       <DrawerItem
         icon={({ color, size }) => (
@@ -81,14 +82,20 @@ const CustomDrawerContent = (props: any) => {
 
 const _layout = () => {
   return (
-    <Drawer
-      drawerContent={(props) => (
-        <CustomDrawerContent {...props} backgroundColor="#393D42" />
-      )}
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <View className="flex-1">
+      <BallBg />
+      <Drawer
+        drawerContent={(props) => (
+          <CustomDrawerContent {...props} backgroundColor="#393D42" />
+        )}
+        screenOptions={{
+          headerShown: false,
+          sceneStyle: { backgroundColor: "transparent" },
+        }}
+      >
+        <Drawer.Screen name="profile" />
+      </Drawer>
+    </View>
   );
 };
 
