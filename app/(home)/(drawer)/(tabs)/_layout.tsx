@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import * as Haptics from "expo-haptics";
-import BallBg from "~/components/BallBg";
 import { useUser } from "@clerk/clerk-expo";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
@@ -28,10 +27,9 @@ export default function Layout() {
 
   return (
     <View className="flex-1 bg-transparent">
-      {/* <BallBg /> */}
       <Tabs
         screenOptions={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: "InSync",
           headerTitleStyle: {
             color: "white",
@@ -125,6 +123,7 @@ export default function Layout() {
             ),
           }}
         />
+        <Tabs.Screen name="profile" options={{ href: null }} />
       </Tabs>
     </View>
   );

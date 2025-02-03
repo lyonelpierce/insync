@@ -14,7 +14,6 @@ export default function Page() {
         <Text className="text-white">
           Hello {user?.emailAddresses[0].emailAddress}
         </Text>
-        <SignOutButton />
       </SignedIn>
       <SignedOut>
         <Button onPress={() => router.push("/sign-in")}>

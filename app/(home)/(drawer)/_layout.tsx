@@ -9,6 +9,7 @@ import { Separator } from "~/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import BallBg from "~/components/BallBg";
+import { Button } from "~/components/ui/button";
 
 const CustomDrawerContent = (props: any) => {
   const { signOut } = useClerk();
@@ -49,7 +50,7 @@ const CustomDrawerContent = (props: any) => {
         )}
         label="Profile"
         labelStyle={{ color: "#FCFCFB", fontSize: 18 }}
-        onPress={() => router.push("/(home)/(drawer)/profile")}
+        onPress={() => router.push("/(home)/(drawer)/(tabs)/profile")}
       />
       <DrawerItem
         icon={({ color, size }) => (
@@ -81,6 +82,12 @@ const CustomDrawerContent = (props: any) => {
 };
 
 const _layout = () => {
+  const { user, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <View className="flex-1">
       <BallBg />
@@ -88,12 +95,36 @@ const _layout = () => {
         drawerContent={(props) => (
           <CustomDrawerContent {...props} backgroundColor="#393D42" />
         )}
-        screenOptions={{
-          headerShown: false,
+        screenOptions={({ navigation }) => ({
           sceneStyle: { backgroundColor: "transparent" },
-        }}
+          headerStyle: { backgroundColor: "transparent" },
+          headerTitleStyle: { color: "white" },
+          headerLeft: () => (
+            <Button
+              size="icon"
+              variant="ghost"
+              style={{ marginLeft: 12 }}
+              onPress={() => navigation.openDrawer()}
+            >
+              <Avatar alt="User Avatar">
+                <AvatarImage source={{ uri: user?.imageUrl }} />
+                <AvatarFallback>
+                  <Text>{user?.firstName?.charAt(0)}</Text>
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          ),
+          headerRight: () => (
+            <View style={{ paddingRight: 12 }}>
+              <Button size="icon" variant="ghost">
+                <Ionicons name="search-outline" size={24} color="white" />
+              </Button>
+            </View>
+          ),
+          headerTitle: "InSync",
+        })}
       >
-        <Drawer.Screen name="profile" />
+        <Drawer.Screen name="(tabs)" />
       </Drawer>
     </View>
   );
