@@ -5,8 +5,11 @@ import { useUser } from "@clerk/clerk-expo";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
+import { type ParamListBase, useNavigation } from "@react-navigation/native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Button } from "~/components/ui/button";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
   <View className="bg-gray-300/10 rounded-lg">
@@ -17,6 +20,7 @@ const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
 export default function Layout() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
+  const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
 
   if (!isLoaded) {
     return <Text>Loading...</Text>;
@@ -53,14 +57,18 @@ export default function Layout() {
               backgroundColor: "transparent",
             },
             headerLeft: () => (
-              <View style={{ paddingLeft: 16 }}>
+              <Button
+                size="icon"
+                style={{ paddingLeft: 24 }}
+                onPress={() => navigation.openDrawer()}
+              >
                 <Avatar alt="User Avatar">
                   <AvatarImage source={{ uri: user?.imageUrl }} />
                   <AvatarFallback>
                     <Text>{user?.firstName?.charAt(0)}</Text>
                   </AvatarFallback>
                 </Avatar>
-              </View>
+              </Button>
             ),
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="home-outline" size={size} color={color} />

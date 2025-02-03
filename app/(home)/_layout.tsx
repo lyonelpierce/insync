@@ -16,7 +16,7 @@ const _layout = () => {
         headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen
         name="(modal)/create"
         options={{
