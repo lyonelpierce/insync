@@ -47,6 +47,12 @@ const _layout = () => {
             ),
           }}
         />
+        <Stack.Screen
+          name="(modal)/editprofile"
+          options={{
+            presentation: "modal",
+          }}
+        />
       </Stack>
     </View>
   );

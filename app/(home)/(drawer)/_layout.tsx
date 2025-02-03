@@ -6,6 +6,7 @@ import { Drawer } from "expo-router/drawer";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
+import { PencilIcon } from "lucide-react-native";
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import { Separator } from "~/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -31,7 +32,7 @@ const CustomDrawerContent = (props: any) => {
 
   return (
     <DrawerContentScrollView {...props}>
-      <View className="flex-col gap-2 items-center justify-center">
+      <View className="flex-col gap-2 items-center justify-center relative">
         <Avatar alt="User Avatar" className="w-20 h-20">
           <AvatarImage source={{ uri: user?.imageUrl }} />
           <AvatarFallback>
@@ -42,6 +43,16 @@ const CustomDrawerContent = (props: any) => {
           {user?.firstName} {user?.lastName}
         </Text>
         <Text className="text-[#A7A7A7] text-sm">@{user?.username}</Text>
+        <View className="absolute top-0 right-4">
+          <Button variant="ghost" size="icon">
+            <PencilIcon size={24} color={"#D9D9D9"} />
+          </Button>
+        </View>
+        <View className="absolute top-0 left-4">
+          <Button variant="ghost" size="icon">
+            <Ionicons name="settings-outline" size={24} color={"#D9D9D9"} />
+          </Button>
+        </View>
       </View>
       <Separator className="bg-[#535F70] my-8" />
       <DrawerItem
