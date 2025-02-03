@@ -1,15 +1,15 @@
 import { View } from "react-native";
 import { router } from "expo-router";
 import * as Linking from "expo-linking";
+import BallBg from "~/components/BallBg";
 import { Drawer } from "expo-router/drawer";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
+import { Button } from "~/components/ui/button";
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import { Separator } from "~/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import BallBg from "~/components/BallBg";
-import { Button } from "~/components/ui/button";
 
 const CustomDrawerContent = (props: any) => {
   const { signOut } = useClerk();
