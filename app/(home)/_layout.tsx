@@ -57,8 +57,7 @@ const _layout = () => {
                 onPress={() => router.back()}
               />
             ),
-            headerBackground: () => <View className="flex-1 bg-[#393D42]" />,
-            headerRight: () => <SaveIcon size={24} color="white" />,
+            headerBackground: () => <View className="flex-1 bg-[#353D48]" />,
           }}
         />
       </Stack>

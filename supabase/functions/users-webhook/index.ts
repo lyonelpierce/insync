@@ -42,7 +42,7 @@ serve(async (req) => {
 
       const { error } = await supabase
         .from("users")
-        .insert({ clerk_id: id, email, image_url, first_name, last_name, username });
+        .insert({ id, email, image_url, first_name, last_name, username });
 
       if (error) throw error;
     }
