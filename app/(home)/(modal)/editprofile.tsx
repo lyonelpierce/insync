@@ -41,7 +41,7 @@ const editprofile = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user?.id, // Only run query when user.id is available
+    enabled: !!user?.id,
   });
 
   // Update local state when userData changes
@@ -60,10 +60,10 @@ const editprofile = () => {
     const cleanUsername = newUsername.replace(/^@/, "");
 
     // Basic validation
-    if (cleanUsername.length < 3) {
+    if (cleanUsername.length < 4) {
       setErrors((prev) => ({
         ...prev,
-        username: "Username must be at least 3 characters long",
+        username: "Username must be at least 4 characters long",
       }));
       return false;
     }
@@ -81,7 +81,7 @@ const editprofile = () => {
       .from("users")
       .select("username")
       .eq("username", cleanUsername)
-      .neq("id", user?.id) // Exclude current user
+      .neq("id", user?.id)
       .single();
 
     if (existingUser) {
@@ -108,7 +108,8 @@ const editprofile = () => {
       isValid = false;
     }
 
-    if (bio.length > 500) {
+    // Bio is optional, only validate length if it exists
+    if (bio && bio.length > 500) {
       newErrors.bio = "Bio must be less than 500 characters";
       isValid = false;
     }
