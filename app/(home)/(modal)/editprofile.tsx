@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
+import { useState, useEffect } from "react";
+import { Camera } from "lucide-react-native";
 import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import { Textarea } from "~/components/ui/textarea";
 import createClerkSupabaseClient from "~/utils/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "~/components/ui/button";
-import { Camera } from "lucide-react-native";
 
 const editprofile = () => {
   const { user, isLoaded } = useUser();
