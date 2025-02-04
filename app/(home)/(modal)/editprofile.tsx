@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Textarea } from "~/components/ui/textarea";
 import createClerkSupabaseClient from "~/utils/supabase";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Label } from "~/components/ui/label";
 
 const editprofile = () => {
   const { user, isLoaded } = useUser();
@@ -174,10 +175,13 @@ const editprofile = () => {
           <Camera size={26} color="white" />
         </Button>
       </View>
-      <View className="flex flex-col gap-6 w-full mt-12">
-        <View>
+      <View className="flex flex-col gap-10 w-full mt-12">
+        <View className="relative">
+          <View className="absolute -top-3 left-4 px-1 bg-[#353D48] text-sm text-[#A7A7A7] z-10">
+            <Label className="text-[#FCFCFB]">Username</Label>
+          </View>
           <Input
-            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] rounded-xl min-h-14"
+            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] rounded-xl min-h-16"
             value={username.startsWith("@") ? username : `@${username}`}
             onChangeText={(text) => {
               setUsername(text);
@@ -189,9 +193,12 @@ const editprofile = () => {
           ) : null}
         </View>
 
-        <View>
+        <View className="relative">
+          <View className="absolute -top-3 left-4 px-1 bg-[#353D48] text-sm text-[#A7A7A7] z-10">
+            <Label className="text-[#FCFCFB]">First Name</Label>
+          </View>
           <Input
-            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] rounded-xl min-h-14"
+            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] rounded-xl min-h-16"
             value={firstName}
             onChangeText={(text) => {
               setFirstName(text);
@@ -205,9 +212,12 @@ const editprofile = () => {
           ) : null}
         </View>
 
-        <View>
+        <View className="relative">
+          <View className="absolute -top-3 left-4 px-1 bg-[#353D48] text-sm text-[#A7A7A7] z-10">
+            <Label className="text-[#FCFCFB]">Last Name</Label>
+          </View>
           <Input
-            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] rounded-xl min-h-14"
+            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] rounded-xl min-h-16"
             value={lastName}
             onChangeText={(text) => {
               setLastName(text);
@@ -219,9 +229,12 @@ const editprofile = () => {
           ) : null}
         </View>
 
-        <View>
+        <View className="relative">
+          <View className="absolute -top-3 left-4 px-1 bg-[#353D48] text-sm text-[#A7A7A7] z-10">
+            <Label className="text-[#FCFCFB]">Bio</Label>
+          </View>
           <Textarea
-            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] rounded-xl"
+            className="w-full bg-transparent border-[#A7A7A7] text-[#FCFCFB] placeholder:text-[#A7A7A7] placeholder:text-base rounded-xl min-h-16"
             value={bio}
             onChangeText={(text) => {
               setBio(text);
