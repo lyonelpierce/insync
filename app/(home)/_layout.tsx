@@ -6,6 +6,7 @@ import BallBg from "~/components/BallBg";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
+import { SaveIcon, SquarePen } from "lucide-react-native";
 
 const _layout = () => {
   const router = useRouter();
@@ -37,14 +38,7 @@ const _layout = () => {
               />
             ),
             headerBackground: () => <View className="flex-1 bg-[#393D42]" />,
-            headerRight: () => (
-              <Button
-                className="bg-green-600 rounded-lg"
-                onPress={() => router.back()}
-              >
-                <Text>Post</Text>
-              </Button>
-            ),
+            headerRight: () => <SquarePen size={24} color="white" />,
           }}
         />
         <Stack.Screen
@@ -64,6 +58,7 @@ const _layout = () => {
               />
             ),
             headerBackground: () => <View className="flex-1 bg-[#393D42]" />,
+            headerRight: () => <SaveIcon size={24} color="white" />,
           }}
         />
       </Stack>
