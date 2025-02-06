@@ -6,14 +6,14 @@ import { useAuth } from "@clerk/clerk-expo";
 import { ImageBackground } from "react-native";
 import { Button } from "~/components/ui/button";
 import { ChevronRight } from "lucide-react-native";
+import { useConvexAuth } from "convex/react";
 
 const index = () => {
   const router = useRouter();
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoading, isAuthenticated } = useConvexAuth();
 
-  if (isLoaded && isSignedIn) {
-    console.log("isSignedIn", isSignedIn);
-    return <Redirect href="/(home)/(tabs)" />;
+  if (!isLoading && isAuthenticated) {
+    return <Redirect href="/(home)/(drawer)/(tabs)" />;
   }
 
   return (

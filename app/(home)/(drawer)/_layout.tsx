@@ -4,19 +4,21 @@ import * as Linking from "expo-linking";
 import BallBg from "~/components/BallBg";
 import { Drawer } from "expo-router/drawer";
 import { Text } from "~/components/ui/text";
+import { useClerk } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
 import { PencilIcon } from "lucide-react-native";
-import { useClerk, useUser } from "@clerk/clerk-expo";
 import { Separator } from "~/components/ui/separator";
+import { useUserProfile } from "~/hooks/useUserProfile";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 
 const CustomDrawerContent = (props: any) => {
   const { signOut } = useClerk();
-  const { user, isLoaded } = useUser();
+  const { userProfile, isLoading } = useUserProfile();
 
-  if (!isLoaded) {
+  if (isLoading || !userProfile) {
     return <Text>Loading...</Text>;
   }
 
@@ -34,15 +36,15 @@ const CustomDrawerContent = (props: any) => {
     <DrawerContentScrollView {...props}>
       <View className="flex-col gap-2 items-center justify-center relative">
         <Avatar alt="User Avatar" className="w-20 h-20">
-          <AvatarImage source={{ uri: user?.imageUrl }} />
+          <AvatarImage source={{ uri: userProfile.imageUrl ?? undefined }} />
           <AvatarFallback>
-            <Text>{user?.firstName?.charAt(0)}</Text>
+            <Text>{userProfile.first_name?.charAt(0)}</Text>
           </AvatarFallback>
         </Avatar>
         <Text className="text-white text-lg font-bold">
-          {user?.firstName} {user?.lastName}
+          {userProfile.first_name} {userProfile.last_name}
         </Text>
-        <Text className="text-[#A7A7A7] text-sm">@{user?.username}</Text>
+        <Text className="text-[#A7A7A7] text-sm">@{userProfile.username}</Text>
         <View className="absolute top-0 right-4">
           <Button variant="ghost" size="icon">
             <PencilIcon
@@ -97,51 +99,55 @@ const CustomDrawerContent = (props: any) => {
 };
 
 const _layout = () => {
-  const { user, isLoaded } = useUser();
+  const { userProfile, isLoading } = useUserProfile();
 
-  if (!isLoaded) {
+  if (isLoading || !userProfile) {
     return <Text>Loading...</Text>;
   }
 
   return (
-    <View className="flex-1">
-      <BallBg />
-      <Drawer
-        drawerContent={(props) => (
-          <CustomDrawerContent {...props} backgroundColor="#393D42" />
-        )}
-        screenOptions={({ navigation }) => ({
-          sceneStyle: { backgroundColor: "transparent" },
-          headerStyle: { backgroundColor: "transparent" },
-          headerTitleStyle: { color: "white" },
-          headerLeft: () => (
-            <Button
-              size="icon"
-              variant="ghost"
-              style={{ marginLeft: 12 }}
-              onPress={() => navigation.openDrawer()}
-            >
-              <Avatar alt="User Avatar">
-                <AvatarImage source={{ uri: user?.imageUrl }} />
-                <AvatarFallback>
-                  <Text>{user?.firstName?.charAt(0)}</Text>
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          ),
-          headerRight: () => (
-            <View style={{ paddingRight: 12 }}>
-              <Button size="icon" variant="ghost">
-                <Ionicons name="search-outline" size={24} color="white" />
+    <ActionSheetProvider>
+      <View className="flex-1">
+        <BallBg />
+        <Drawer
+          drawerContent={(props) => (
+            <CustomDrawerContent {...props} backgroundColor="#393D42" />
+          )}
+          screenOptions={({ navigation }) => ({
+            sceneStyle: { backgroundColor: "transparent" },
+            headerStyle: { backgroundColor: "transparent" },
+            headerTitleStyle: { color: "white" },
+            headerLeft: () => (
+              <Button
+                size="icon"
+                variant="ghost"
+                style={{ marginLeft: 12 }}
+                onPress={() => navigation.openDrawer()}
+              >
+                <Avatar alt="User Avatar">
+                  <AvatarImage
+                    source={{ uri: userProfile.imageUrl ?? undefined }}
+                  />
+                  <AvatarFallback>
+                    <Text>{userProfile.first_name?.charAt(0)}</Text>
+                  </AvatarFallback>
+                </Avatar>
               </Button>
-            </View>
-          ),
-          headerTitle: "InSync",
-        })}
-      >
-        <Drawer.Screen name="(tabs)" />
-      </Drawer>
-    </View>
+            ),
+            headerRight: () => (
+              <View style={{ paddingRight: 12 }}>
+                <Button size="icon" variant="ghost">
+                  <Ionicons name="search-outline" size={24} color="white" />
+                </Button>
+              </View>
+            ),
+            headerTitle: "InSync",
+          })}
+        >
+          <Drawer.Screen name="(tabs)" />
+        </Drawer>
+      </View>
+    </ActionSheetProvider>
   );
 };
 

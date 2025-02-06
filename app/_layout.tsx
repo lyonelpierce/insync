@@ -1,16 +1,18 @@
-import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { Stack } from "expo-router";
 import { tokenCache } from "~/cache";
+import { useFonts } from "expo-font";
+import { StatusBar } from "expo-status-bar";
+import { ConvexReactClient } from "convex/react";
+import * as SplashScreen from "expo-splash-screen";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { ClerkProvider, ClerkLoaded, useAuth } from "@clerk/clerk-expo";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 import "react-native-reanimated";
 import "~/global.css";
@@ -20,8 +22,11 @@ import { useColorScheme } from "~/hooks/useColorScheme";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
+  unsavedChangesWarning: false,
+});
+
 export default function RootLayout() {
-  const queryClient = new QueryClient();
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -46,22 +51,24 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <ActionSheetProvider>
       <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
         <ClerkLoaded>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(home)" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="auto" />
-          </ThemeProvider>
+          <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="index" />
+                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="(home)" />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ThemeProvider>
+          </ConvexProviderWithClerk>
         </ClerkLoaded>
       </ClerkProvider>
-    </QueryClientProvider>
+    </ActionSheetProvider>
   );
 }
