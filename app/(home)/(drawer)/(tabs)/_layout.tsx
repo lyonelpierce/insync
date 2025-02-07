@@ -29,7 +29,7 @@ export default function Layout() {
     <View className="flex-1 bg-transparent">
       <Tabs
         screenOptions={{
-          headerShown: false,
+          headerShown: true,
           headerTitle: "InSync",
           headerTitleStyle: {
             color: "white",
@@ -123,7 +123,10 @@ export default function Layout() {
             ),
           }}
         />
-        <Tabs.Screen name="profile" options={{ href: null }} />
+        <Tabs.Screen
+          name="profile"
+          options={{ href: null, headerShown: false }}
+        />
       </Tabs>
     </View>
   );

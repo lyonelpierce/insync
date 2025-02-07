@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import * as Linking from "expo-linking";
 import BallBg from "~/components/BallBg";
 import { Drawer } from "expo-router/drawer";
@@ -100,6 +100,7 @@ const CustomDrawerContent = (props: any) => {
 
 const _layout = () => {
   const { userProfile, isLoading } = useUserProfile();
+  const pathname = usePathname();
 
   if (isLoading || !userProfile) {
     return <Text>Loading...</Text>;
@@ -115,6 +116,7 @@ const _layout = () => {
           )}
           screenOptions={({ navigation }) => ({
             sceneStyle: { backgroundColor: "transparent" },
+            headerShown: false,
             headerStyle: { backgroundColor: "transparent" },
             headerTitleStyle: { color: "white" },
             headerLeft: () => (

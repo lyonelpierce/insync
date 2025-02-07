@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { View, Text } from "react-native";
 import { useMutation } from "convex/react";
 import { Camera } from "lucide-react-native";
@@ -10,9 +11,8 @@ import { Id } from "~/convex/_generated/dataModel";
 import { Textarea } from "~/components/ui/textarea";
 import { useUserProfile } from "~/hooks/useUserProfile";
 import { useState, useEffect, useCallback } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 // Add interface for errors
 interface FormErrors {
