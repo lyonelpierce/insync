@@ -25,7 +25,13 @@ const profile = () => {
       <View className="h-1/2 w-full rounded-b-3xl overflow-hidden">
         <BlurView intensity={20} tint="light" className="h-full w-full flex">
           <SafeAreaView className="flex-row justify-between items-center px-4">
-            <ChevronLeftIcon size={24} color="white" />
+            <Button
+              className="rounded-full aspect-square items-center justify-center"
+              onPress={() => router.back()}
+              variant="ghost"
+            >
+              <ChevronLeftIcon size={24} color="white" />
+            </Button>
             <Text className="text-white text-2xl">
               {userProfile?.first_name} {userProfile?.last_name}
             </Text>
@@ -34,12 +40,13 @@ const profile = () => {
           <View className="items-center flex h-full gap-8">
             <Avatar
               alt="User Avatar"
-              className="w-32 h-32 border border-[#FCFCFB] p-4"
+              className="w-32 h-32 border border-[#FCFCFB] p-2"
             >
               <AvatarImage
                 source={{
                   uri: userProfile?.imageUrl || "fallback-uri-here",
                 }}
+                className="rounded-full"
               />
               <AvatarFallback>
                 <Text>
