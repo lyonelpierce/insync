@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useMutation } from "convex/react";
 import { Text } from "~/components/ui/text";
+import { api } from "~/convex/_generated/api";
 import { Button } from "~/components/ui/button";
 import * as ImagePicker from "expo-image-picker";
 import { Textarea } from "~/components/ui/textarea";
@@ -10,6 +12,7 @@ import { CameraIcon, ImagePlayIcon, ImageIcon } from "lucide-react-native";
 
 const Create = () => {
   const { userProfile, isLoading } = useUserProfile();
+  const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
   const [mediaFiles, setMediaFiles] = useState<ImagePicker.ImagePickerAsset[]>(
     []
   );
@@ -38,6 +41,28 @@ const Create = () => {
     if (!result.canceled) {
       setMediaFiles([result.assets[0], ...mediaFiles]);
     }
+  };
+
+  const removeImage = (index: number) => {
+    setMediaFiles(mediaFiles.filter((_, i) => i !== index));
+  };
+
+  const uploadMediaFile = async (image: ImagePicker.ImagePickerAsset) => {
+    // Step 1: Get a short-lived upload URL
+    const postUrl = await generateUploadUrl();
+
+    // Convert URI to blob
+    const response = await fetch(image!.uri);
+    const blob = await response.blob();
+
+    // Step 2: POST the file to the URL
+    const result = await fetch(postUrl, {
+      method: "POST",
+      headers: { "Content-Type": image!.mimeType! },
+      body: blob,
+    });
+    const { storageId } = await result.json();
+    return storageId;
   };
 
   return (
