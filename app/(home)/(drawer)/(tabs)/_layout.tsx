@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { useUser } from "@clerk/clerk-expo";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
@@ -9,6 +8,7 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
 import { type ParamListBase, useNavigation } from "@react-navigation/native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { useUserProfile } from "~/hooks/useUserProfile";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
   <View className="bg-gray-300/10 rounded-lg">
@@ -18,10 +18,11 @@ const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
 
 export default function Layout() {
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const { userProfile, isLoading } = useUserProfile();
+
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
 
-  if (!isLoaded) {
+  if (isLoading || !userProfile) {
     return <Text>Loading...</Text>;
   }
 
@@ -45,9 +46,14 @@ export default function Layout() {
               onPress={() => navigation.openDrawer()}
             >
               <Avatar alt="User Avatar">
-                <AvatarImage source={{ uri: user?.imageUrl }} />
+                <AvatarImage
+                  source={{ uri: userProfile?.imageUrl || undefined }}
+                />
                 <AvatarFallback>
-                  <Text>{user?.firstName?.charAt(0)}</Text>
+                  <Text>
+                    {userProfile?.first_name?.charAt(0)}
+                    {userProfile?.last_name?.charAt(0)}
+                  </Text>
                 </AvatarFallback>
               </Avatar>
             </Button>

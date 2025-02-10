@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import { router, usePathname } from "expo-router";
 import * as Linking from "expo-linking";
 import BallBg from "~/components/BallBg";
 import { Drawer } from "expo-router/drawer";
@@ -8,6 +7,7 @@ import { useClerk } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
 import { PencilIcon } from "lucide-react-native";
+import { router, usePathname } from "expo-router";
 import { Separator } from "~/components/ui/separator";
 import { useUserProfile } from "~/hooks/useUserProfile";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";

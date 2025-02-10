@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
+import { defineSchema, defineTable } from 'convex/server';
 
 // User schema
 export const User = {
@@ -15,10 +15,20 @@ export const User = {
   created_at: v.optional(v.string()), // Made optional and will be set during user creation
 };
 
+export const Device = {
+  user_id: v.id('users'),
+  device_name: v.string(),
+  status: v.union(v.literal('online'), v.literal('offline')),
+}
+
 // Posts schema
 export const Post = {
   user_id: v.id('users'),
   content: v.string(),
+  likeCount: v.number(), // Default value 0
+  commentCount: v.number(), // Default value 0
+  retweetCount: v.number(), // Default value 0
+  mediaFiles: v.optional(v.array(v.string())), // Array of media file URLs
   created_at: v.string(),
 };
 
@@ -52,15 +62,8 @@ export const Media = {
   created_at: v.string(),
 };
 
-// Follows schema (for following users)
-export const Follow = {
-  follower_id: v.id('users'),
-  following_id: v.id('users'),
-  created_at: v.string(),
-};
-
 // Friend Requests schema
-export const FriendRequest = {
+export const SyncRequest = {
   sender_id: v.id('users'), // User who sends the request
   receiver_id: v.id('users'), // User who receives the request
   status: v.union(v.literal('pending'), v.literal('accepted'), v.literal('declined')), // Request status
@@ -72,18 +75,6 @@ export const Friend = {
   user1_id: v.id('users'),
   user2_id: v.id('users'),
   created_at: v.string(),
-};
-
-export const Message = {
-  userId: v.id('users'), // Foreign key to users table
-  threadId: v.optional(v.string()),
-  content: v.string(),
-  likeCount: v.number(), // Default value 0
-  commentCount: v.number(), // Default value 0
-  retweetCount: v.number(), // Default value 0
-  mediaFiles: v.optional(v.array(v.string())), // Array of media file URLs
-  websiteUrl: v.optional(v.string()), // Optional website URL
-  created_at: v.optional(v.string()), // Made optional and will be set during user creation
 };
 
 // Define schema with indexes
@@ -115,18 +106,10 @@ export default defineSchema({
     .index('byPostId', ['post_id'])
     .index('byCreatedAt', ['created_at']),
 
-  follows: defineTable(Follow)
-    .index('byFollowerId', ['follower_id'])
-    .index('byFollowingId', ['following_id']),
-
-  friend_requests: defineTable(FriendRequest)
+  sync_requests: defineTable(SyncRequest)
     .index('byReceiverId', ['receiver_id'])
     .index('bySenderId', ['sender_id']),
 
   friends: defineTable(Friend)
     .index('byUserId', ['user1_id', 'user2_id']),
-
-  messages: defineTable(Message)
-    .index('byUserId', ['userId'])
-    .index('byThreadId', ['threadId']),
 });

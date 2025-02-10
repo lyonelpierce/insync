@@ -47,3 +47,9 @@
     --ring: 240 4.9% 83.9%;
   }
 }
+
+* {
+  font-family: "Urbanist";
+}
+
+/* Add any other global styles you need */
