@@ -112,7 +112,7 @@ const _layout = () => {
         <BallBg />
         <Drawer
           drawerContent={(props) => (
-            <CustomDrawerContent {...props} backgroundColor="#393D42" />
+            <CustomDrawerContent {...props} backgroundColor="#353d48" />
           )}
           screenOptions={({ navigation }) => ({
             sceneStyle: { backgroundColor: "transparent" },

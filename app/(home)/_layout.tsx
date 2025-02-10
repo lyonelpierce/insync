@@ -37,7 +37,7 @@ const _layout = () => {
                 onPress={() => router.back()}
               />
             ),
-            headerBackground: () => <View className="flex-1 bg-[#393D42]" />,
+            headerBackground: () => <View className="flex-1 bg-[#353D48]" />,
             headerRight: () => <SquarePen size={24} color="white" />,
           }}
         />
