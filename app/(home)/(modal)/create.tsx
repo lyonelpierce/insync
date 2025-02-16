@@ -7,8 +7,8 @@ import * as ImagePicker from "expo-image-picker";
 import { Textarea } from "~/components/ui/textarea";
 import { useUserProfile } from "~/hooks/useUserProfile";
 import { View, KeyboardAvoidingView, Platform } from "react-native";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { CameraIcon, ImagePlayIcon, ImageIcon } from "lucide-react-native";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 const Create = () => {
   const { userProfile, isLoading } = useUserProfile();
@@ -25,7 +25,7 @@ const Create = () => {
     const options: ImagePicker.ImagePickerOptions = {
       allowsEditing: true,
       aspect: [4, 3],
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images", "videos"],
     };
 
     let result;
@@ -82,7 +82,7 @@ const Create = () => {
             </AvatarFallback>
           </Avatar>
           <Textarea
-            placeholder="What's on your heart?"
+            placeholder="How are you feeling today?"
             className="bg-transparent border-0 text-white"
             multiline
             autoFocus={true}

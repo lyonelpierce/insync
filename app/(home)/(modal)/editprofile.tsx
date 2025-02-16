@@ -142,7 +142,7 @@ const editprofile = () => {
           if (selectedIndex === 0) {
             // Take photo
             result = await ImagePicker.launchCameraAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              mediaTypes: ["images"],
               allowsEditing: true,
               aspect: [4, 3],
               quality: 1,
@@ -150,7 +150,7 @@ const editprofile = () => {
           } else if (selectedIndex === 1) {
             // Choose from library
             result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              mediaTypes: ["images"],
               allowsEditing: true,
               aspect: [4, 3],
               quality: 1,
