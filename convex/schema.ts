@@ -25,10 +25,8 @@ export const Device = {
 export const Post = {
   user_id: v.id('users'),
   content: v.string(),
-  likeCount: v.number(), // Default value 0
-  commentCount: v.number(), // Default value 0
-  retweetCount: v.number(), // Default value 0
   mediaFiles: v.optional(v.array(v.string())), // Array of media file URLs
+  repostCount: v.number(), // Default value 0
   created_at: v.string(),
 };
 

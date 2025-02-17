@@ -1,25 +1,27 @@
+import React from "react";
 import { useQuery } from "convex/react";
 import { api } from "~/convex/_generated/api";
-import { Text, View, FlatList, Image } from "react-native";
-import React from "react";
-import { AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Avatar } from "~/components/ui/avatar";
+import { Button } from "~/components/ui/button";
+import { Text, View, FlatList, Image, ScrollView } from "react-native";
+import { AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   EllipsisVerticalIcon,
   HeartIcon,
   MessageCircleIcon,
   Share2Icon,
 } from "lucide-react-native";
-import { Button } from "~/components/ui/button";
 
 export default function Page() {
   const posts = useQuery(api.posts.list);
 
+  console.log(posts);
+
   return (
-    <View className="flex-1 p-6">
+    <ScrollView className="flex-1 p-6">
       <FlatList
         data={posts}
-        className="flex-1"
+        className="flex-1 pb-24"
         renderItem={({ item }) => (
           <View className="p-6 bg-[#353D48]/25 rounded-3xl mb-6">
             <View className="flex flex-row items-center justify-between gap-2 mb-4">
@@ -81,16 +83,40 @@ export default function Page() {
             )}
             <View className="flex flex-row items-center justify-between mt-2">
               <View>
-                <Button size="icon" className="rounded-full bg-[#353D48]/40">
-                  <Share2Icon size={18} color="white" />
+                <Button
+                  className="flex flex-row items-center gap-2 native:px-0"
+                  variant="ghost"
+                >
+                  <View className=" h-10 w-10 flex items-center justify-center rounded-full bg-[#353D48]/40">
+                    <Share2Icon size={18} color="white" />
+                  </View>
+                  <Text className="text-white text-xl font-medium">
+                    {item.likeCount}
+                  </Text>
                 </Button>
               </View>
-              <View className="flex flex-row gap-2 items-center">
-                <Button size="icon" className="rounded-full bg-[#353D48]/40">
-                  <HeartIcon size={18} color="white" />
+              <View className="flex flex-row gap-4 items-center">
+                <Button
+                  className="flex flex-row items-center gap-2 native:px-0"
+                  variant="ghost"
+                >
+                  <View className=" h-10 w-10 flex items-center justify-center rounded-full bg-[#353D48]/40">
+                    <HeartIcon size={18} color="white" />
+                  </View>
+                  <Text className="text-white text-xl font-medium">
+                    {item.likeCount}
+                  </Text>
                 </Button>
-                <Button size="icon" className="rounded-full bg-[#353D48]/40">
-                  <MessageCircleIcon size={18} color="white" />
+                <Button
+                  className="flex flex-row items-center gap-2 native:px-0"
+                  variant="ghost"
+                >
+                  <View className=" h-10 w-10 flex items-center justify-center rounded-full bg-[#353D48]/40">
+                    <MessageCircleIcon size={18} color="white" />
+                  </View>
+                  <Text className="text-white text-xl font-medium">
+                    {item.commentCount}
+                  </Text>
                 </Button>
               </View>
             </View>
@@ -101,6 +127,6 @@ export default function Page() {
           <Text className="text-white text-center p-4">No posts yet</Text>
         )}
       />
-    </View>
+    </ScrollView>
   );
 }

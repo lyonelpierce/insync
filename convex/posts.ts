@@ -31,9 +31,7 @@ export const addPost = mutation({
       content: args.content,
       mediaFiles: args.mediaFiles,
       created_at: args.created_at,
-      likeCount: 0,
-      commentCount: 0,
-      retweetCount: 0,
+      repostCount: 0,
     });
 
     // Create media entries if there are media files
@@ -69,15 +67,30 @@ export const list = query({
       .order("desc")
       .take(20);
 
-    // Fetch user information and media for each post
+    // Fetch user information, media, and engagement counts for each post
     const postsWithUsersAndMedia = await Promise.all(
       posts.map(async (post) => {
         const user = await ctx.db.get(post.user_id);
         
+        // Get comment and like counts
+        const commentCount = await ctx.db
+          .query("comments")
+          .withIndex("byPostId", q => q.eq("post_id", post._id))
+          .collect()
+          .then(comments => comments.length);
+
+        const likeCount = await ctx.db
+          .query("likes") 
+          .withIndex("byPostId", q => q.eq("post_id", post._id))
+          .collect()
+          .then(likes => likes.length);
+
         if (!user?.imageUrl || user.imageUrl.startsWith('http')) {
           return {
             ...post,
-            user
+            user,
+            commentCount,
+            likeCount
           };
         }
 
@@ -94,7 +107,9 @@ export const list = query({
               const url = await ctx.storage.getUrl(mediaId as Id<'_storage'>);
               return url;
             }) ?? []
-          )
+          ),
+          commentCount,
+          likeCount
         };
       })
     );

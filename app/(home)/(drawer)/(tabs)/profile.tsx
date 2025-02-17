@@ -20,8 +20,6 @@ const profile = () => {
 
   const isOwner = userProfile?.clerkId === user?.id;
 
-  console.log(userProfile);
-
   return (
     <View className="flex-1">
       <View className="h-1/2 w-full rounded-b-3xl overflow-hidden">
