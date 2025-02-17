@@ -88,23 +88,28 @@ export default defineSchema({
 
   posts: defineTable(Post)
     .index('byUserId', ['user_id'])
-    .index('byCreatedAt', ['created_at']),
+    .index('byCreatedAt', ['created_at'])
+    .index('byUserIdAndCreatedAt', ['user_id', 'created_at']),
 
   comments: defineTable(Comment)
     .index('byPostId', ['post_id'])
-    .index('byUserId', ['user_id']),
+    .index('byUserId', ['user_id'])
+    .index('byPostIdAndCreatedAt', ['post_id', 'created_at']),
 
   likes: defineTable(Like)
     .index('byPostId', ['post_id'])
-    .index('byUserId', ['user_id']),
+    .index('byUserId', ['user_id'])
+    .index('byPostIdAndUserId', ['post_id', 'user_id']),
 
   bookmarks: defineTable(Bookmark)
     .index('byPostId', ['post_id'])
-    .index('byUserId', ['user_id']),
+    .index('byUserId', ['user_id'])
+    .index('byPostIdAndUserId', ['post_id', 'user_id']),
 
   media: defineTable(Media)
     .index('byPostId', ['post_id'])
-    .index('byCreatedAt', ['created_at']),
+    .index('byCreatedAt', ['created_at'])
+    .index('byPostIdAndCreatedAt', ['post_id', 'created_at']),
 
   sync_requests: defineTable(SyncRequest)
     .index('byReceiverId', ['receiver_id'])
