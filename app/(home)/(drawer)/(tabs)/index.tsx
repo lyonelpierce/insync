@@ -4,7 +4,13 @@ import { Text, View, FlatList, Image } from "react-native";
 import React from "react";
 import { AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Avatar } from "~/components/ui/avatar";
-import { EllipsisVerticalIcon } from "lucide-react-native";
+import {
+  EllipsisVerticalIcon,
+  HeartIcon,
+  MessageCircleIcon,
+  Share2Icon,
+} from "lucide-react-native";
+import { Button } from "~/components/ui/button";
 
 export default function Page() {
   const posts = useQuery(api.posts.list);
@@ -51,6 +57,7 @@ export default function Page() {
 
               <EllipsisVerticalIcon size={24} color="white" />
             </View>
+            <Text className="text-[#D9D9D9] text-lg">{item.content}</Text>
             {item.mediaFiles && item.mediaFiles.length > 0 && (
               <View className="flex flex-row flex-wrap">
                 {item.mediaFiles.map((mediaId: string, index: number) => {
@@ -72,7 +79,21 @@ export default function Page() {
                 })}
               </View>
             )}
-            <Text className="text-[#D9D9D9] text-lg">{item.content}</Text>
+            <View className="flex flex-row items-center justify-between mt-2">
+              <View>
+                <Button size="icon" className="rounded-full bg-[#353D48]/40">
+                  <Share2Icon size={18} color="white" />
+                </Button>
+              </View>
+              <View className="flex flex-row gap-2 items-center">
+                <Button size="icon" className="rounded-full bg-[#353D48]/40">
+                  <HeartIcon size={18} color="white" />
+                </Button>
+                <Button size="icon" className="rounded-full bg-[#353D48]/40">
+                  <MessageCircleIcon size={18} color="white" />
+                </Button>
+              </View>
+            </View>
           </View>
         )}
         keyExtractor={(item) => item._id.toString()}
