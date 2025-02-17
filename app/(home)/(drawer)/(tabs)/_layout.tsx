@@ -9,6 +9,7 @@ import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
 import { type ParamListBase, useNavigation } from "@react-navigation/native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { useUserProfile } from "~/hooks/useUserProfile";
+import { BlurView } from "expo-blur";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
   <View className="bg-gray-300/10 rounded-lg">
@@ -65,9 +66,13 @@ export default function Layout() {
               </Button>
             </View>
           ),
+          tabBarBackground: () => (
+            <BlurView intensity={30} tint="dark" style={{ flex: 1 }} />
+          ),
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: "transparent",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            paddingTop: 10,
             position: "absolute",
             elevation: 0,
             borderTopWidth: 0,
