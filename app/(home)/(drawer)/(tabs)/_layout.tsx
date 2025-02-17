@@ -71,7 +71,7 @@ export default function Layout() {
           ),
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: "rgba(0,0,0,0.5)",
+            backgroundColor: "rgba(0,0,0,0.6)",
             paddingTop: 10,
             position: "absolute",
             elevation: 0,

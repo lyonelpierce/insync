@@ -15,7 +15,7 @@ export default function Page() {
         data={posts}
         className="flex-1"
         renderItem={({ item }) => (
-          <View className="p-4 bg-[#353D48] rounded-3xl mb-6">
+          <View className="p-6 bg-[#353D48]/25 rounded-3xl mb-6">
             <View className="flex flex-row items-center justify-between gap-2 mb-4">
               <View className="flex flex-row items-center gap-2">
                 <Avatar alt={item.user.username} className="w-12 h-12">
