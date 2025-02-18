@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, Modal, Pressable, Dimensions } from "react-native";
 import { Button } from "~/components/ui/button";
 import {
   HeartIcon,
@@ -22,6 +22,9 @@ export function PostCard({ post }: PostCardProps) {
   const [localBookmarkCount, setLocalBookmarkCount] = useState(
     post.bookmarkCount
   );
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
 
   const isLiked = useQuery(api.posts.checkLikeStatus, { postId: post._id });
   const isBookmarked = useQuery(api.posts.checkBookmarkStatus, {
@@ -72,17 +75,19 @@ export function PostCard({ post }: PostCardProps) {
             if (!mediaId) return null;
             return (
               <View key={mediaId} className="w-1/2 p-1">
-                <Image
-                  source={{ uri: mediaId }}
-                  className="w-full h-48 rounded-lg"
-                  resizeMode="cover"
-                  onError={(error) =>
-                    console.error(
-                      "Image loading error:",
-                      error.nativeEvent.error
-                    )
-                  }
-                />
+                <Pressable onPress={() => setSelectedImage(mediaId)}>
+                  <Image
+                    source={{ uri: mediaId }}
+                    className="w-full h-48 rounded-lg"
+                    resizeMode="cover"
+                    onError={(error) =>
+                      console.error(
+                        "Image loading error:",
+                        error.nativeEvent.error
+                      )
+                    }
+                  />
+                </Pressable>
               </View>
             );
           })}
@@ -156,6 +161,24 @@ export function PostCard({ post }: PostCardProps) {
           </Button>
         </View>
       </View>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={!!selectedImage}
+        onRequestClose={() => setSelectedImage(null)}
+      >
+        <Pressable
+          className="flex-1 bg-black/90 items-center justify-center"
+          onPress={() => setSelectedImage(null)}
+        >
+          <Image
+            source={{ uri: selectedImage ?? undefined }}
+            style={{ width: screenWidth, height: screenHeight * 0.8 }}
+            resizeMode="contain"
+          />
+        </Pressable>
+      </Modal>
     </View>
   );
 }

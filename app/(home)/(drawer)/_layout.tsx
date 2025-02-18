@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Dimensions, Modal, Pressable, Image } from "react-native";
 import * as Linking from "expo-linking";
 import BallBg from "~/components/BallBg";
 import { Drawer } from "expo-router/drawer";
@@ -13,10 +13,14 @@ import { useUserProfile } from "~/hooks/useUserProfile";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { useState } from "react";
 
 const CustomDrawerContent = (props: any) => {
   const { signOut } = useClerk();
   const { userProfile, isLoading } = useUserProfile();
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
 
   if (isLoading || !userProfile) {
     return <Text>Loading...</Text>;
@@ -35,12 +39,14 @@ const CustomDrawerContent = (props: any) => {
   return (
     <DrawerContentScrollView {...props}>
       <View className="flex-col gap-2 items-center justify-center relative">
-        <Avatar alt="User Avatar" className="w-20 h-20">
-          <AvatarImage source={{ uri: userProfile.imageUrl ?? undefined }} />
-          <AvatarFallback>
-            <Text>{userProfile.first_name?.charAt(0)}</Text>
-          </AvatarFallback>
-        </Avatar>
+        <Pressable onPress={() => setShowAvatarModal(true)}>
+          <Avatar alt="User Avatar" className="w-20 h-20">
+            <AvatarImage source={{ uri: userProfile.imageUrl ?? undefined }} />
+            <AvatarFallback>
+              <Text>{userProfile.first_name?.charAt(0)}</Text>
+            </AvatarFallback>
+          </Avatar>
+        </Pressable>
         <Text className="text-white text-lg font-bold">
           {userProfile.first_name} {userProfile.last_name}
         </Text>
@@ -59,6 +65,23 @@ const CustomDrawerContent = (props: any) => {
             <Ionicons name="settings-outline" size={24} color={"#D9D9D9"} />
           </Button>
         </View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={showAvatarModal}
+          onRequestClose={() => setShowAvatarModal(false)}
+        >
+          <Pressable
+            className="flex-1 bg-black/90 items-center justify-center"
+            onPress={() => setShowAvatarModal(false)}
+          >
+            <Image
+              source={{ uri: userProfile.imageUrl ?? undefined }}
+              style={{ width: screenWidth, height: screenHeight * 0.8 }}
+              resizeMode="contain"
+            />
+          </Pressable>
+        </Modal>
       </View>
       <Separator className="bg-[#535F70] my-8" />
       <DrawerItem
@@ -101,6 +124,9 @@ const CustomDrawerContent = (props: any) => {
 const _layout = () => {
   const { userProfile, isLoading } = useUserProfile();
   const pathname = usePathname();
+  const [showHeaderAvatarModal, setShowHeaderAvatarModal] = useState(false);
+  const screenWidth = Dimensions.get("window").width;
+  const screenHeight = Dimensions.get("window").height;
 
   if (isLoading || !userProfile) {
     return <Text>Loading...</Text>;
@@ -120,21 +146,43 @@ const _layout = () => {
             headerStyle: { backgroundColor: "transparent" },
             headerTitleStyle: { color: "white" },
             headerLeft: () => (
-              <Button
-                size="icon"
-                variant="ghost"
-                style={{ marginLeft: 12 }}
-                onPress={() => navigation.openDrawer()}
-              >
-                <Avatar alt="User Avatar">
-                  <AvatarImage
-                    source={{ uri: userProfile.imageUrl ?? undefined }}
-                  />
-                  <AvatarFallback>
-                    <Text>{userProfile.first_name?.charAt(0)}</Text>
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
+              <View>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  style={{ marginLeft: 12 }}
+                  onPress={() => navigation.openDrawer()}
+                >
+                  <Pressable onPress={() => setShowHeaderAvatarModal(true)}>
+                    <Avatar alt="User Avatar">
+                      <AvatarImage
+                        source={{ uri: userProfile.imageUrl ?? undefined }}
+                      />
+                      <AvatarFallback>
+                        <Text>{userProfile.first_name?.charAt(0)}</Text>
+                      </AvatarFallback>
+                    </Avatar>
+                  </Pressable>
+                </Button>
+
+                <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={showHeaderAvatarModal}
+                  onRequestClose={() => setShowHeaderAvatarModal(false)}
+                >
+                  <Pressable
+                    className="flex-1 bg-black/90 items-center justify-center"
+                    onPress={() => setShowHeaderAvatarModal(false)}
+                  >
+                    <Image
+                      source={{ uri: userProfile.imageUrl ?? undefined }}
+                      style={{ width: screenWidth, height: screenHeight * 0.8 }}
+                      resizeMode="contain"
+                    />
+                  </Pressable>
+                </Modal>
+              </View>
             ),
             headerRight: () => (
               <View style={{ paddingRight: 12 }}>

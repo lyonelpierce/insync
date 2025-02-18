@@ -2,12 +2,13 @@ import React from "react";
 
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import { View } from "react-native";
+import { View, Pressable } from "react-native";
 
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { cn } from "~/lib/utils";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -16,6 +17,7 @@ export default function Page() {
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
 
   // Handle the submission of the sign-in form
   const onSignInPress = React.useCallback(async () => {
@@ -56,13 +58,25 @@ export default function Page() {
           onChangeText={(email) => setEmailAddress(email)}
           className="w-full bg-transparent border-[#A7A7A7] min-h-14 placeholder:text-[#A7A7A7] rounded-lg text-white"
         />
-        <Input
-          value={password}
-          placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-          className="w-full bg-transparent border-[#A7A7A7] min-h-14 placeholder:text-[#A7A7A7] rounded-lg text-white"
-        />
+        <View className="w-full relative">
+          <Input
+            value={password}
+            placeholder="Enter password"
+            secureTextEntry={!showPassword}
+            onChangeText={(password) => setPassword(password)}
+            className="w-full bg-transparent border-[#A7A7A7] min-h-14 placeholder:text-[#A7A7A7] rounded-lg text-white pr-12"
+          />
+          <Pressable
+            onPress={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-0 bottom-0 justify-center"
+          >
+            <Ionicons
+              name={showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="#A7A7A7"
+            />
+          </Pressable>
+        </View>
         {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
       </View>
 
