@@ -18,7 +18,7 @@ export default function Page() {
   console.log(posts);
 
   return (
-    <ScrollView className="flex-1 p-6">
+    <View className="flex-1 p-6">
       <FlatList
         data={posts}
         className="flex-1 pb-24"
@@ -127,6 +127,6 @@ export default function Page() {
           <Text className="text-white text-center p-4">No posts yet</Text>
         )}
       />
-    </ScrollView>
+    </View>
   );
 }

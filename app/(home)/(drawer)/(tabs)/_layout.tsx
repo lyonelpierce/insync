@@ -115,14 +115,6 @@ export default function Layout() {
           }}
         />
         <Tabs.Screen
-          name="messages"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <MessageCircleIcon size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
           name="notifications"
           options={{
             tabBarIcon: ({ color, size }) => (
@@ -131,6 +123,14 @@ export default function Layout() {
                 size={size}
                 color={color}
               />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="messages"
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MessageCircleIcon size={size} color={color} />
             ),
           }}
         />
