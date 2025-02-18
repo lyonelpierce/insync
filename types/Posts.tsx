@@ -10,7 +10,9 @@ export type PostCardProps = {
       username: string | null;
       imageUrl?: string | null;
     };
+    repostCount: number;
     likeCount: number;
+    bookmarkCount: number;
     commentCount: number;
   };
 };

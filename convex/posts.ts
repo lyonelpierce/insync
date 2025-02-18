@@ -32,6 +32,9 @@ export const addPost = mutation({
       mediaFiles: args.mediaFiles,
       created_at: args.created_at,
       repostCount: 0,
+      likeCount: 0,
+      bookmarkCount: 0,
+      commentCount: 0,
     });
 
     // Create media entries if there are media files
@@ -75,25 +78,11 @@ export const list = query({
           throw new Error("User not found or username is missing");
         }
         
-        // Get comment and like counts
-        const commentCount = await ctx.db
-          .query("comments")
-          .withIndex("byPostId", q => q.eq("post_id", post._id))
-          .collect()
-          .then(comments => comments.length);
-
-        const likeCount = await ctx.db
-          .query("likes") 
-          .withIndex("byPostId", q => q.eq("post_id", post._id))
-          .collect()
-          .then(likes => likes.length);
-
+        // Get comment, like, and bookmark counts
         if (!user.imageUrl || user.imageUrl.startsWith('http')) {
           return {
             ...post,
             user,
-            commentCount,
-            likeCount
           };
         }
 
@@ -111,12 +100,144 @@ export const list = query({
               return url;
             }) ?? []
           ),
-          commentCount,
-          likeCount
         };
       })
     );
 
     return postsWithUsersAndMedia;
+  },
+});
+
+export const toggleLike = mutation({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    
+    const user = await ctx.db
+      .query("users")
+      .filter(q => q.eq(q.field("clerkId"), identity.subject))
+      .first();
+    if (!user) throw new Error("User not found");
+
+    // Check if like exists
+    const existingLike = await ctx.db
+      .query("likes")
+      .filter(q => q.and(
+        q.eq(q.field("post_id"), args.postId),
+        q.eq(q.field("user_id"), user._id)
+      ))
+      .first();
+
+    if (existingLike) {
+      // Unlike: Delete like and decrease count
+      await ctx.db.delete(existingLike._id);
+      await ctx.db.patch(args.postId, {
+        likeCount: (await ctx.db.get(args.postId))!.likeCount - 1
+      });
+      return false;
+    } else {
+      // Like: Create like and increase count
+      await ctx.db.insert("likes", {
+        user_id: user._id,
+        post_id: args.postId,
+        created_at: new Date().toISOString(),
+      });
+      await ctx.db.patch(args.postId, {
+        likeCount: (await ctx.db.get(args.postId))!.likeCount + 1
+      });
+      return true;
+    }
+  },
+});
+
+export const toggleBookmark = mutation({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    
+    const user = await ctx.db
+      .query("users")
+      .filter(q => q.eq(q.field("clerkId"), identity.subject))
+      .first();
+    if (!user) throw new Error("User not found");
+
+    // Check if bookmark exists
+    const existingBookmark = await ctx.db
+      .query("bookmarks")
+      .filter(q => q.and(
+        q.eq(q.field("post_id"), args.postId),
+        q.eq(q.field("user_id"), user._id)
+      ))
+      .first();
+
+    if (existingBookmark) {
+      // Remove bookmark and decrease count
+      await ctx.db.delete(existingBookmark._id);
+      await ctx.db.patch(args.postId, {
+        bookmarkCount: (await ctx.db.get(args.postId))!.bookmarkCount - 1
+      });
+      return false;
+    } else {
+      // Add bookmark and increase count
+      await ctx.db.insert("bookmarks", {
+        user_id: user._id,
+        post_id: args.postId,
+        created_at: new Date().toISOString(),
+      });
+      await ctx.db.patch(args.postId, {
+        bookmarkCount: (await ctx.db.get(args.postId))!.bookmarkCount + 1
+      });
+      return true;
+    }
+  },
+});
+
+export const checkLikeStatus = query({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return false;
+    
+    const user = await ctx.db
+      .query("users")
+      .filter(q => q.eq(q.field("clerkId"), identity.subject))
+      .first();
+    if (!user) return false;
+
+    const like = await ctx.db
+      .query("likes")
+      .filter(q => q.and(
+        q.eq(q.field("post_id"), args.postId),
+        q.eq(q.field("user_id"), user._id)
+      ))
+      .first();
+    
+    return !!like;
+  },
+});
+
+export const checkBookmarkStatus = query({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return false;
+    
+    const user = await ctx.db
+      .query("users")
+      .filter(q => q.eq(q.field("clerkId"), identity.subject))
+      .first();
+    if (!user) return false;
+
+    const bookmark = await ctx.db
+      .query("bookmarks")
+      .filter(q => q.and(
+        q.eq(q.field("post_id"), args.postId),
+        q.eq(q.field("user_id"), user._id)
+      ))
+      .first();
+    
+    return !!bookmark;
   },
 });

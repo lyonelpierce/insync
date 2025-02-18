@@ -1,17 +1,33 @@
 import React from "react";
+import { useState } from "react";
 import { Text, View, Image } from "react-native";
 import { Button } from "~/components/ui/button";
 import {
-  BookmarkIcon,
-  EllipsisVerticalIcon,
   HeartIcon,
-  MessageCircleIcon,
   Repeat2Icon,
+  BookmarkIcon,
+  MessageCircleIcon,
+  EllipsisVerticalIcon,
 } from "lucide-react-native";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { PostCardProps } from "~/types/Posts";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "~/convex/_generated/api";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 export function PostCard({ post }: PostCardProps) {
+  const toggleLike = useMutation(api.posts.toggleLike);
+  const toggleBookmark = useMutation(api.posts.toggleBookmark);
+
+  const [localLikeCount, setLocalLikeCount] = useState(post.likeCount);
+  const [localBookmarkCount, setLocalBookmarkCount] = useState(
+    post.bookmarkCount
+  );
+
+  const isLiked = useQuery(api.posts.checkLikeStatus, { postId: post._id });
+  const isBookmarked = useQuery(api.posts.checkBookmarkStatus, {
+    postId: post._id,
+  });
+
   return (
     <View className="p-6 bg-[#353D48]/25 rounded-3xl mb-6">
       <View className="flex flex-row items-center justify-between gap-2 mb-4">
@@ -82,7 +98,7 @@ export function PostCard({ post }: PostCardProps) {
               <Repeat2Icon size={18} color="white" />
             </View>
             <Text className="text-white text-xl font-medium">
-              {post.likeCount}
+              {post.repostCount}
             </Text>
           </Button>
         </View>
@@ -90,12 +106,20 @@ export function PostCard({ post }: PostCardProps) {
           <Button
             className="flex flex-row items-center gap-2 native:px-0"
             variant="ghost"
+            onPress={async () => {
+              const isLiked = await toggleLike({ postId: post._id });
+              setLocalLikeCount((prev) => (isLiked ? prev + 1 : prev - 1));
+            }}
           >
-            <View className=" h-10 w-10 flex items-center justify-center rounded-full bg-[#353D48]/40">
-              <HeartIcon size={18} color="white" />
+            <View className="h-10 w-10 flex items-center justify-center rounded-full bg-[#353D48]/40">
+              <HeartIcon
+                size={18}
+                color={isLiked ? "#FF3B30" : "white"}
+                fill={isLiked ? "#FF3B30" : "transparent"}
+              />
             </View>
             <Text className="text-white text-xl font-medium">
-              {post.likeCount}
+              {localLikeCount}
             </Text>
           </Button>
           <Button
@@ -112,12 +136,22 @@ export function PostCard({ post }: PostCardProps) {
           <Button
             className="flex flex-row items-center gap-2 native:px-0"
             variant="ghost"
+            onPress={async () => {
+              const isBookmarked = await toggleBookmark({ postId: post._id });
+              setLocalBookmarkCount((prev) =>
+                isBookmarked ? prev + 1 : prev - 1
+              );
+            }}
           >
-            <View className=" h-10 w-10 flex items-center justify-center rounded-full bg-[#353D48]/40">
-              <BookmarkIcon size={18} color="white" />
+            <View className="h-10 w-10 flex items-center justify-center rounded-full bg-[#353D48]/40">
+              <BookmarkIcon
+                size={18}
+                color={isBookmarked ? "#FFD700" : "white"}
+                fill={isBookmarked ? "#FFD700" : "transparent"}
+              />
             </View>
             <Text className="text-white text-xl font-medium">
-              {post.commentCount}
+              {localBookmarkCount}
             </Text>
           </Button>
         </View>

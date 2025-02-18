@@ -27,6 +27,9 @@ export const Post = {
   content: v.string(),
   mediaFiles: v.optional(v.array(v.string())), // Array of media file URLs
   repostCount: v.number(), // Default value 0
+  likeCount: v.number(),
+  bookmarkCount: v.number(),
+  commentCount: v.number(),
   created_at: v.string(),
 };
 
