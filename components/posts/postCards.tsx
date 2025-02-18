@@ -78,7 +78,7 @@ export function PostCard({ post }: PostCardProps) {
                 <Pressable onPress={() => setSelectedImage(mediaId)}>
                   <Image
                     source={{ uri: mediaId }}
-                    className="w-full h-48 rounded-lg"
+                    className="w-full h-48 rounded-lg object-cover"
                     resizeMode="cover"
                     onError={(error) =>
                       console.error(

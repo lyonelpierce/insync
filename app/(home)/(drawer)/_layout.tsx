@@ -123,7 +123,6 @@ const CustomDrawerContent = (props: any) => {
 
 const _layout = () => {
   const { userProfile, isLoading } = useUserProfile();
-  const pathname = usePathname();
   const [showHeaderAvatarModal, setShowHeaderAvatarModal] = useState(false);
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
