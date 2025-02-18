@@ -71,6 +71,9 @@ export const list = query({
     const postsWithUsersAndMedia = await Promise.all(
       posts.map(async (post) => {
         const user = await ctx.db.get(post.user_id);
+        if (!user || !user.username) {
+          throw new Error("User not found or username is missing");
+        }
         
         // Get comment and like counts
         const commentCount = await ctx.db
@@ -85,7 +88,7 @@ export const list = query({
           .collect()
           .then(likes => likes.length);
 
-        if (!user?.imageUrl || user.imageUrl.startsWith('http')) {
+        if (!user.imageUrl || user.imageUrl.startsWith('http')) {
           return {
             ...post,
             user,
