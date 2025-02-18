@@ -241,3 +241,60 @@ export const checkBookmarkStatus = query({
     return !!bookmark;
   },
 });
+
+export const getUserPosts = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the current user
+    const user = await ctx.db
+      .query("users")
+      .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Fetch posts for the current user
+    const posts = await ctx.db
+      .query("posts")
+      .filter(q => q.eq(q.field("user_id"), user._id))
+      .order("desc")
+      .take(20);
+
+    // Process posts with media URLs
+    const postsWithMedia = await Promise.all(
+      posts.map(async (post) => {
+        if (!user.imageUrl || user.imageUrl.startsWith('http')) {
+          return {
+            ...post,
+            user,
+          };
+        }
+
+        const url = await ctx.storage.getUrl(user.imageUrl as Id<'_storage'>);
+
+        return {
+          ...post,
+          user: {
+            ...user,
+            imageUrl: url
+          },
+          mediaFiles: await Promise.all(
+            post.mediaFiles?.map(async (mediaId) => {
+              const url = await ctx.storage.getUrl(mediaId as Id<'_storage'>);
+              return url;
+            }) ?? []
+          ),
+        };
+      })
+    );
+
+    return postsWithMedia;
+  },
+});

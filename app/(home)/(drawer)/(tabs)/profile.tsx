@@ -23,7 +23,7 @@ const profile = () => {
 
   const isOwner = userProfile?.clerkId === user?.id;
 
-  const posts = useQuery(api.posts.list);
+  const posts = useQuery(api.posts.getUserPosts);
 
   return (
     <View className="flex-1">
