@@ -1,7 +1,8 @@
-import { mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { query } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
+import { mutation, QueryCtx } from "./_generated/server";
 
 export const addPost = mutation({
   args: {
@@ -62,49 +63,42 @@ export const generateUploadUrl = mutation({
   },
 });
 
-export const list = query({
-  args: {},
-  handler: async (ctx) => {
-    const posts = await ctx.db
-      .query("posts")
-      .order("desc")
-      .take(20);
+export const getPosts = query({
+  args: { paginationOpts: paginationOptsValidator, userId: v.optional(v.id("users")) },
+  handler: async (ctx, args) => {
+    let posts;
+
+    if (args.userId) {
+      posts = await ctx.db
+        .query("posts")
+        .filter((q) => q.eq(q.field("user_id"), args.userId))
+        .order("desc")
+        .paginate(args.paginationOpts);
+    } else {
+      posts = await ctx.db
+        .query("posts")
+        .order("desc")
+        .paginate(args.paginationOpts);
+    }
 
     // Fetch user information, media, and engagement counts for each post
-    const postsWithUsersAndMedia = await Promise.all(
-      posts.map(async (post) => {
-        const user = await ctx.db.get(post.user_id);
-        if (!user || !user.username) {
-          throw new Error("User not found or username is missing");
-        }
-        
-        // Get comment, like, and bookmark counts
-        if (!user.imageUrl || user.imageUrl.startsWith('http')) {
-          return {
-            ...post,
-            user,
-          };
-        }
-
-        const url = await ctx.storage.getUrl(user.imageUrl as Id<'_storage'>);
+    const postsWithMedia = await Promise.all(
+      posts.page.map(async (post) => {
+        const creator = await getPostCreator(ctx, post.user_id);
+        const media = await getPostMedia(ctx, post.mediaFiles);
 
         return {
           ...post,
-          user: {
-            ...user,
-            imageUrl: url
-          },
-          mediaFiles: await Promise.all(
-            post.mediaFiles?.map(async (mediaId) => {
-              const url = await ctx.storage.getUrl(mediaId as Id<'_storage'>);
-              return url;
-            }) ?? []
-          ),
+          creator,
+          media,
         };
       })
     );
 
-    return postsWithUsersAndMedia;
+    return {
+      ...posts,
+      page: postsWithMedia,
+    }
   },
 });
 
@@ -242,59 +236,29 @@ export const checkBookmarkStatus = query({
   },
 });
 
-export const getUserPosts = query({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
+const getPostCreator = async (ctx: QueryCtx, userId: Id<"users">) => {
+  const user = await ctx.db.get(userId);
 
-    // Get the current user
-    const user = await ctx.db
-      .query("users")
-      .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
-      .first();
+  if (!user?.imageUrl || user.imageUrl.startsWith('http')) {
+    return user;
+  }
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+  const url = await ctx.storage.getUrl(user.imageUrl as Id<'_storage'>);
 
-    // Fetch posts for the current user
-    const posts = await ctx.db
-      .query("posts")
-      .filter(q => q.eq(q.field("user_id"), user._id))
-      .order("desc")
-      .take(20);
+  return {
+    ...user,
+    imageUrl: url,
+  };
+};
 
-    // Process posts with media URLs
-    const postsWithMedia = await Promise.all(
-      posts.map(async (post) => {
-        if (!user.imageUrl || user.imageUrl.startsWith('http')) {
-          return {
-            ...post,
-            user,
-          };
-        }
+const getPostMedia = async (ctx: QueryCtx, mediaFiles: string[] | undefined) => {
+  if (!mediaFiles || mediaFiles.length === 0) {
+    return [];
+  }
 
-        const url = await ctx.storage.getUrl(user.imageUrl as Id<'_storage'>);
-
-        return {
-          ...post,
-          user: {
-            ...user,
-            imageUrl: url
-          },
-          mediaFiles: await Promise.all(
-            post.mediaFiles?.map(async (mediaId) => {
-              const url = await ctx.storage.getUrl(mediaId as Id<'_storage'>);
-              return url;
-            }) ?? []
-          ),
-        };
-      })
-    );
-
-    return postsWithMedia;
-  },
-});
+  const urlPromises = mediaFiles.map((file) => ctx.storage.getUrl(file as Id<'_storage'>));
+  const results = await Promise.allSettled(urlPromises);
+  return results
+    .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
+    .map((result) => result.value);
+};

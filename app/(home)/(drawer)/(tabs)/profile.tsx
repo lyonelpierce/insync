@@ -23,7 +23,7 @@ const profile = () => {
 
   const isOwner = userProfile?.clerkId === user?.id;
 
-  const posts = useQuery(api.posts.getUserPosts);
+  // const posts = useQuery(api.posts.getUserPosts);
 
   return (
     <View className="flex-1">
@@ -85,7 +85,7 @@ const profile = () => {
           </View>
         </BlurView>
       </View>
-      <FlatList
+      {/* <FlatList
         data={posts}
         className="flex-1 p-6 pb-24"
         renderItem={({ item }) => <PostCard post={item} />}
@@ -93,7 +93,7 @@ const profile = () => {
         ListEmptyComponent={() => (
           <Text className="text-white text-center p-4">No posts yet</Text>
         )}
-      />
+      /> */}
     </View>
   );
 };

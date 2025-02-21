@@ -11,9 +11,9 @@ import { Link } from "expo-router";
 import { PostCardProps } from "~/types/Posts";
 import { api } from "~/convex/_generated/api";
 import { Button } from "~/components/ui/button";
+import { Text, View, Image } from "react-native";
 import { useMutation, useQuery } from "convex/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Text, View, Image } from "react-native";
 
 export function PostCard({ post }: PostCardProps) {
   const toggleLike = useMutation(api.posts.toggleLike);
@@ -33,18 +33,18 @@ export function PostCard({ post }: PostCardProps) {
     <View className="p-6 bg-[#353D48]/25 rounded-3xl mb-6">
       <View className="flex flex-row items-center justify-between gap-2 mb-4">
         <View className="flex flex-row items-center gap-2">
-          <Avatar alt={post.user.username!} className="w-12 h-12">
+          <Avatar alt={post.creator?.username!} className="w-12 h-12">
             <AvatarImage
-              source={{ uri: post.user.imageUrl ?? undefined }}
+              source={{ uri: post.creator?.imageUrl ?? undefined }}
               className="rounded-full object-cover"
             />
             <AvatarFallback>
-              <Text>{post.user.username}</Text>
+              <Text>{post.creator?.username}</Text>
             </AvatarFallback>
           </Avatar>
           <View className="-mt-2">
             <Text className="text-[#FCFCFB] text-lg font-medium mt-2">
-              {post.user.username}
+              {post.creator?.username}
             </Text>
             <Text className="text-[#D9D9D9] text-sm">
               {(() => {
@@ -67,9 +67,9 @@ export function PostCard({ post }: PostCardProps) {
         <EllipsisVerticalIcon size={24} color="white" />
       </View>
       <Text className="text-[#D9D9D9] text-lg">{post.content}</Text>
-      {post.mediaFiles && post.mediaFiles.length > 0 && (
+      {post.media && post.media.length > 0 && (
         <View className="flex flex-row flex-wrap">
-          {post.mediaFiles.map((mediaId: string | null) => {
+          {post.media.map((mediaId: string | null) => {
             if (!mediaId) return null;
             return (
               <View key={mediaId} className="w-1/2 p-1">
