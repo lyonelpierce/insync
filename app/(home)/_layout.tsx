@@ -66,16 +66,21 @@ const _layout = () => {
             presentation: "fullScreenModal",
             title: "",
             headerStyle: {
-              backgroundColor: "transparent",
+              backgroundColor: "black",
             },
             headerLeft: () => (
-              <Button variant="ghost" size="icon" onPress={() => router.back()}>
-                <Ionicons name="close" size={24} color="white" />
+              <Button variant="ghost" size="icon">
+                <Ionicons
+                  name="close"
+                  size={24}
+                  color="white"
+                  onPress={() => router.back()}
+                />
               </Button>
             ),
             headerRight: () => (
-              <Button variant="ghost" size="icon" onPress={() => router.back()}>
-                <Ionicons name="ellipsis-vertical" size={24} color="white" />
+              <Button variant="ghost" size="icon">
+                <Ionicons name="ellipsis-horizontal" size={24} color="white" />
               </Button>
             ),
           }}
