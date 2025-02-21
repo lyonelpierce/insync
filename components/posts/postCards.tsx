@@ -8,14 +8,18 @@ import {
 } from "lucide-react-native";
 import { useState } from "react";
 import { Link } from "expo-router";
-import { PostCardProps } from "~/types/Posts";
 import { api } from "~/convex/_generated/api";
 import { Button } from "~/components/ui/button";
 import { Text, View, Image } from "react-native";
+import { Doc } from "~/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({
+  post,
+}: {
+  post: Doc<"posts"> & { creator: Doc<"users">; media: string[] | undefined };
+}) {
   const toggleLike = useMutation(api.posts.toggleLike);
   const toggleBookmark = useMutation(api.posts.toggleBookmark);
 

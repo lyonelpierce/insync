@@ -5,7 +5,7 @@ import { defineSchema, defineTable } from 'convex/server';
 export const User = {
   email: v.string(),
   clerkId: v.string(), // If using Clerk for authentication
-  imageUrl: v.optional(v.string()),
+  imageUrl: v.optional(v.union(v.string(), v.null())),
   first_name: v.optional(v.string()),
   last_name: v.optional(v.string()),
   username: v.union(v.string(), v.null()),

@@ -239,6 +239,10 @@ export const checkBookmarkStatus = query({
 const getPostCreator = async (ctx: QueryCtx, userId: Id<"users">) => {
   const user = await ctx.db.get(userId);
 
+  if (!user) {
+    throw new Error(`User ${userId} not found`);
+  }
+  
   if (!user?.imageUrl || user.imageUrl.startsWith('http')) {
     return user;
   }
