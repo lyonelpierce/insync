@@ -36,7 +36,8 @@ export const Post = {
 // Comments schema
 export const Comment = {
   user_id: v.id('users'),
-  post_id: v.id('posts'),
+  post_id: v.optional(v.id('posts')), // Nullable for media comments
+  media_id: v.optional(v.id('media')), // Nullable for post comments
   content: v.string(),
   created_at: v.string(),
 };
@@ -44,7 +45,8 @@ export const Comment = {
 // Likes schema
 export const Like = {
   user_id: v.id('users'),
-  post_id: v.id('posts'),
+  post_id: v.optional(v.id('posts')), // Nullable for media likes
+  media_id: v.optional(v.id('media')), // Nullable for post likes
   created_at: v.string(),
 };
 
@@ -59,7 +61,9 @@ export const Bookmark = {
 export const Media = {
   post_id: v.id('posts'),
   url: v.string(),
-  type: v.string(),
+  type: v.string(), // e.g., "image", "video"
+  likeCount: v.optional(v.number()), // Track likes
+  commentCount: v.optional(v.number()), // Track comments
   created_at: v.string(),
 };
 
@@ -94,13 +98,17 @@ export default defineSchema({
 
   comments: defineTable(Comment)
     .index('byPostId', ['post_id'])
+    .index('byMediaId', ['media_id']) // New index
     .index('byUserId', ['user_id'])
-    .index('byPostIdAndCreatedAt', ['post_id', 'created_at']),
+    .index('byPostIdAndCreatedAt', ['post_id', 'created_at'])
+    .index('byMediaIdAndCreatedAt', ['media_id', 'created_at']), // New index
 
   likes: defineTable(Like)
     .index('byPostId', ['post_id'])
+    .index('byMediaId', ['media_id']) // New index
     .index('byUserId', ['user_id'])
-    .index('byPostIdAndUserId', ['post_id', 'user_id']),
+    .index('byPostIdAndUserId', ['post_id', 'user_id'])
+    .index('byMediaIdAndUserId', ['media_id', 'user_id']), // New index
 
   bookmarks: defineTable(Bookmark)
     .index('byPostId', ['post_id'])

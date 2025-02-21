@@ -1,7 +1,4 @@
 import React from "react";
-import { useState } from "react";
-import { Text, View, Image, Modal, Pressable, Dimensions } from "react-native";
-import { Button } from "~/components/ui/button";
 import {
   HeartIcon,
   Repeat2Icon,
@@ -9,10 +6,14 @@ import {
   MessageCircleIcon,
   EllipsisVerticalIcon,
 } from "lucide-react-native";
+import { useState } from "react";
+import { Link } from "expo-router";
 import { PostCardProps } from "~/types/Posts";
-import { useMutation, useQuery } from "convex/react";
 import { api } from "~/convex/_generated/api";
+import { Button } from "~/components/ui/button";
+import { useMutation, useQuery } from "convex/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Text, View, Image } from "react-native";
 
 export function PostCard({ post }: PostCardProps) {
   const toggleLike = useMutation(api.posts.toggleLike);
@@ -22,9 +23,6 @@ export function PostCard({ post }: PostCardProps) {
   const [localBookmarkCount, setLocalBookmarkCount] = useState(
     post.bookmarkCount
   );
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
 
   const isLiked = useQuery(api.posts.checkLikeStatus, { postId: post._id });
   const isBookmarked = useQuery(api.posts.checkBookmarkStatus, {
@@ -75,7 +73,9 @@ export function PostCard({ post }: PostCardProps) {
             if (!mediaId) return null;
             return (
               <View key={mediaId} className="w-1/2 p-1">
-                <Pressable onPress={() => setSelectedImage(mediaId)}>
+                <Link
+                  href={`/(home)/(modal)/image/${encodeURIComponent(mediaId)}`}
+                >
                   <Image
                     source={{ uri: mediaId }}
                     className="w-full h-48 rounded-lg object-cover"
@@ -87,7 +87,7 @@ export function PostCard({ post }: PostCardProps) {
                       )
                     }
                   />
-                </Pressable>
+                </Link>
               </View>
             );
           })}
@@ -161,24 +161,6 @@ export function PostCard({ post }: PostCardProps) {
           </Button>
         </View>
       </View>
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={!!selectedImage}
-        onRequestClose={() => setSelectedImage(null)}
-      >
-        <Pressable
-          className="flex-1 bg-black/90 items-center justify-center"
-          onPress={() => setSelectedImage(null)}
-        >
-          <Image
-            source={{ uri: selectedImage ?? undefined }}
-            style={{ width: screenWidth, height: screenHeight * 0.8 }}
-            resizeMode="contain"
-          />
-        </Pressable>
-      </Modal>
     </View>
   );
 }

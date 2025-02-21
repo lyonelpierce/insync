@@ -60,6 +60,26 @@ const _layout = () => {
             headerBackground: () => <View className="flex-1 bg-[#353D48]" />,
           }}
         />
+        <Stack.Screen
+          name="(modal)/image/[url]"
+          options={{
+            presentation: "fullScreenModal",
+            title: "",
+            headerStyle: {
+              backgroundColor: "transparent",
+            },
+            headerLeft: () => (
+              <Button variant="ghost" size="icon" onPress={() => router.back()}>
+                <Ionicons name="close" size={24} color="white" />
+              </Button>
+            ),
+            headerRight: () => (
+              <Button variant="ghost" size="icon" onPress={() => router.back()}>
+                <Ionicons name="ellipsis-vertical" size={24} color="white" />
+              </Button>
+            ),
+          }}
+        />
       </Stack>
     </View>
   );
