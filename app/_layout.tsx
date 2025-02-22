@@ -64,6 +64,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(auth)" />
                 <Stack.Screen name="(home)" />
                 <Stack.Screen name="+not-found" />
+                <Stack.Screen name="profile" />
               </Stack>
               <StatusBar style="auto" />
             </ThemeProvider>

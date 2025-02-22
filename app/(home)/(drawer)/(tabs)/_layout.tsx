@@ -1,15 +1,15 @@
 import { View } from "react-native";
+import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
 import { Button } from "~/components/ui/button";
+import { useUserProfile } from "~/hooks/useUserProfile";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { HeartPulseIcon, MessageCircleIcon } from "lucide-react-native";
 import { type ParamListBase, useNavigation } from "@react-navigation/native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { useUserProfile } from "~/hooks/useUserProfile";
-import { BlurView } from "expo-blur";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
   <View className="bg-gray-300/10 rounded-lg">

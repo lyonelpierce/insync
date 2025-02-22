@@ -1,17 +1,17 @@
-import React, { useCallback, useState } from "react";
-import { usePaginatedQuery, useQuery } from "convex/react";
-import { api } from "~/convex/_generated/api";
-import { Text, View, FlatList, RefreshControl } from "react-native";
-import { PostCard } from "~/components/posts/postCards";
-import { runOnJS, useSharedValue } from "react-native-reanimated";
-import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
 import {
-  useFocusEffect,
   useIsFocused,
   useNavigation,
+  useFocusEffect,
 } from "@react-navigation/native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { api } from "~/convex/_generated/api";
+import { usePaginatedQuery } from "convex/react";
+import { View, RefreshControl } from "react-native";
+import React, { useCallback, useState } from "react";
+import { PostCard } from "~/components/posts/postCards";
+import { runOnJS, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
 
 export default function Page() {
   const [refreshing, setRefreshing] = useState(false);
@@ -22,7 +22,7 @@ export default function Page() {
   const tabBarHeight = useBottomTabBarHeight();
   const isFocused = useIsFocused();
 
-  const { results, status, loadMore } = usePaginatedQuery(
+  const { results, loadMore } = usePaginatedQuery(
     api.posts.getPosts,
     {},
     {
@@ -38,9 +38,9 @@ export default function Page() {
       newMarginBottom = -tabBarHeight;
     }
 
-    navigation
-      .getParent()
-      ?.setOptions({ tabBarStyle: { marginBottom: newMarginBottom } });
+    navigation?.setOptions({
+      tabBarStyle: { marginBottom: newMarginBottom },
+    });
   };
 
   const scrollHandler = useAnimatedScrollHandler({
@@ -76,17 +76,21 @@ export default function Page() {
   );
 
   return (
-    <View className="flex-1 p-4">
+    <View className="flex-1">
       <Animated.FlatList
+        data={results}
+        className="p-4"
         onScroll={scrollHandler}
         scrollEventThrottle={10}
-        data={results}
-        renderItem={({ item }) => <PostCard post={item} />}
         onEndReached={onLoadmore}
         onEndReachedThreshold={0.5}
-        ItemSeparatorComponent={() => <View className="my-1" />}
+        renderItem={({ item }) => <PostCard post={item} />}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={"white"}
+          />
         }
       />
     </View>

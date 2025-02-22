@@ -34,18 +34,20 @@ export function PostCard({
   });
 
   return (
-    <View className="p-6 bg-[#353D48]/25 rounded-3xl mb-6">
+    <View className="p-4 bg-[#353D48]/25 rounded-3xl mb-6">
       <View className="flex flex-row items-center justify-between gap-2 mb-4">
         <View className="flex flex-row items-center gap-2">
-          <Avatar alt={post.creator?.username!} className="w-12 h-12">
-            <AvatarImage
-              source={{ uri: post.creator?.imageUrl ?? undefined }}
-              className="rounded-full object-cover"
-            />
-            <AvatarFallback>
-              <Text>{post.creator?.username}</Text>
-            </AvatarFallback>
-          </Avatar>
+          <Link href={`/(home)/publicprofile`}>
+            <Avatar alt={post.creator?.username!} className="w-12 h-12">
+              <AvatarImage
+                source={{ uri: post.creator?.imageUrl ?? undefined }}
+                className="rounded-full object-cover"
+              />
+              <AvatarFallback>
+                <Text>{post.creator?.username}</Text>
+              </AvatarFallback>
+            </Avatar>
+          </Link>
           <View className="-mt-2">
             <Text className="text-[#FCFCFB] text-lg font-medium mt-2">
               {post.creator?.username}

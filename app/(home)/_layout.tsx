@@ -85,6 +85,13 @@ const _layout = () => {
             ),
           }}
         />
+        <Stack.Screen
+          name="publicprofile"
+          options={{
+            headerTransparent: true,
+            contentStyle: { backgroundColor: "transparent" },
+          }}
+        />
       </Stack>
     </View>
   );
