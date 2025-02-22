@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, RefreshControl } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
 import { useUserProfile } from "~/hooks/useUserProfile";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,20 +10,82 @@ import {
 } from "lucide-react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
-import { useRouter } from "expo-router";
-import { api } from "~/convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { PostCard } from "~/components/posts/postCards";
+import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
+import { api } from "~/convex/_generated/api";
+import { usePaginatedQuery } from "convex/react";
+import { useIsFocused } from "@react-navigation/native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { runOnJS, useSharedValue } from "react-native-reanimated";
+import { useCallback, useState } from "react";
 
 const profile = () => {
   const router = useRouter();
   const { userProfile } = useUserProfile();
+  const navigation = useNavigation();
+  const scrollOffset = useSharedValue(0);
+  const tabBarHeight = useBottomTabBarHeight();
+  const isFocused = useIsFocused();
 
   const { user } = useUser();
 
   const isOwner = userProfile?.clerkId === user?.id;
 
-  // const posts = useQuery(api.posts.getUserPosts);
+  const { results, loadMore } = usePaginatedQuery(
+    api.posts.getPosts,
+    { userId: userProfile?._id },
+    {
+      initialNumItems: 10,
+    }
+  );
+
+  const updateTabbar = () => {
+    let newMarginBottom = 0;
+    if (scrollOffset.value >= 0 && scrollOffset.value <= tabBarHeight) {
+      newMarginBottom = -scrollOffset.value;
+    } else if (scrollOffset.value > tabBarHeight) {
+      newMarginBottom = -tabBarHeight;
+    }
+
+    navigation?.setOptions({
+      tabBarStyle: { marginBottom: newMarginBottom },
+    });
+  };
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      if (isFocused) {
+        scrollOffset.value = event.contentOffset.y;
+        runOnJS(updateTabbar)();
+      }
+    },
+  });
+
+  const onLoadmore = () => {
+    loadMore(5);
+  };
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+
+      return () => {
+        navigation
+          .getParent()
+          ?.setOptions({ tabBarStyle: { marginBottom: 0 } });
+      };
+    }, [])
+  );
 
   return (
     <View className="flex-1">
@@ -85,15 +147,22 @@ const profile = () => {
           </View>
         </BlurView>
       </View>
-      {/* <FlatList
-        data={posts}
-        className="flex-1 p-6 pb-24"
+      <Animated.FlatList
+        data={results}
+        className="p-4"
+        onScroll={scrollHandler}
+        scrollEventThrottle={10}
+        onEndReached={onLoadmore}
+        onEndReachedThreshold={0.5}
         renderItem={({ item }) => <PostCard post={item} />}
-        keyExtractor={(item) => item._id.toString()}
-        ListEmptyComponent={() => (
-          <Text className="text-white text-center p-4">No posts yet</Text>
-        )}
-      /> */}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={"white"}
+          />
+        }
+      />
     </View>
   );
 };
