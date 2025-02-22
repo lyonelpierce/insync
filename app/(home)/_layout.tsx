@@ -6,7 +6,7 @@ import BallBg from "~/components/BallBg";
 import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
-import { SaveIcon, SquarePen } from "lucide-react-native";
+import { ChevronLeftIcon, SaveIcon, SquarePen } from "lucide-react-native";
 
 const _layout = () => {
   const router = useRouter();
@@ -90,6 +90,16 @@ const _layout = () => {
           options={{
             headerTransparent: true,
             contentStyle: { backgroundColor: "transparent" },
+            title: "",
+            headerLeft: () => (
+              <Button variant="ghost" size="icon">
+                <ChevronLeftIcon
+                  size={24}
+                  color="white"
+                  onPress={() => router.back()}
+                />
+              </Button>
+            ),
           }}
         />
       </Stack>

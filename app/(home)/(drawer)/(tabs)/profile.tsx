@@ -1,32 +1,32 @@
-import { BlurView } from "expo-blur";
-import { View, Text, FlatList, RefreshControl } from "react-native";
-import { useUser } from "@clerk/clerk-expo";
-import { useUserProfile } from "~/hooks/useUserProfile";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ChevronLeftIcon,
-  EllipsisVerticalIcon,
   MessageCircleIcon,
+  EllipsisVerticalIcon,
 } from "lucide-react-native";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
-import { PostCard } from "~/components/posts/postCards";
-import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
+import { BlurView } from "expo-blur";
+import { useUser } from "@clerk/clerk-expo";
 import { api } from "~/convex/_generated/api";
-import { usePaginatedQuery } from "convex/react";
-import { useIsFocused } from "@react-navigation/native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { runOnJS, useSharedValue } from "react-native-reanimated";
 import { useCallback, useState } from "react";
+import { Button } from "~/components/ui/button";
+import { usePaginatedQuery } from "convex/react";
+import { PostCard } from "~/components/posts/postCards";
+import { useIsFocused } from "@react-navigation/native";
+import { useUserProfile } from "~/hooks/useUserProfile";
+import { View, Text, RefreshControl } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { runOnJS, useSharedValue } from "react-native-reanimated";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 const profile = () => {
   const router = useRouter();
-  const { userProfile } = useUserProfile();
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const scrollOffset = useSharedValue(0);
+  const { userProfile } = useUserProfile();
   const tabBarHeight = useBottomTabBarHeight();
-  const isFocused = useIsFocused();
 
   const { user } = useUser();
 
