@@ -14,6 +14,7 @@ import { Text, View, Image } from "react-native";
 import { Doc } from "~/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { useUser } from "@clerk/clerk-expo";
 
 export function PostCard({
   post,
@@ -22,6 +23,9 @@ export function PostCard({
 }) {
   const toggleLike = useMutation(api.posts.toggleLike);
   const toggleBookmark = useMutation(api.posts.toggleBookmark);
+
+  const { user } = useUser();
+  const isOwner = user?.id === post.creator.clerkId;
 
   const [localLikeCount, setLocalLikeCount] = useState(post.likeCount);
   const [localBookmarkCount, setLocalBookmarkCount] = useState(
@@ -37,7 +41,13 @@ export function PostCard({
     <View className="p-4 bg-[#353D48]/25 rounded-3xl mb-6">
       <View className="flex flex-row items-center justify-between gap-2 mb-4">
         <View className="flex flex-row items-center gap-2">
-          <Link href={`/(home)/publicprofile`}>
+          <Link
+            href={
+              isOwner
+                ? "/profile"
+                : `/(home)/publicprofile?userId=${post.creator._id}`
+            }
+          >
             <Avatar alt={post.creator?.username!} className="w-12 h-12">
               <AvatarImage
                 source={{ uri: post.creator?.imageUrl ?? undefined }}
