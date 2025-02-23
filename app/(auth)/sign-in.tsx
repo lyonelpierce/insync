@@ -1,22 +1,21 @@
 import React from "react";
-
-import { useSignIn } from "@clerk/clerk-expo";
-import { Link, useRouter } from "expo-router";
-import { View, Pressable } from "react-native";
-
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
 import { cn } from "~/lib/utils";
+import { View } from "react-native";
+import Sahha from "sahha-react-native";
+import { Text } from "~/components/ui/text";
+import { useSignIn } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import { Input } from "~/components/ui/input";
+import { Link, useRouter } from "expo-router";
+import { Button } from "~/components/ui/button";
 
 export default function Page() {
-  const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
+  const { signIn, setActive, isLoaded } = useSignIn();
 
-  const [emailAddress, setEmailAddress] = React.useState("");
-  const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [emailAddress, setEmailAddress] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
 
   // Handle the submission of the sign-in form
@@ -32,12 +31,25 @@ export default function Page() {
 
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/");
+
+        Sahha.isAuthenticated((error: string, success: boolean) => {
+          console.log(`Success: ${success}`);
+          if (success) {
+            router.replace("/");
+          } else {
+            router.replace("/permission");
+          }
+          if (error) {
+            console.error(`Error: ${error}`);
+          }
+        });
       } else {
         setError("Sign in was not completed. Please try again.");
         console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err: any) {
+      console.log("Error", err);
+
       const errorMessage =
         err.errors?.[0]?.message || "Something went wrong during sign in";
       setError(errorMessage);
@@ -58,7 +70,7 @@ export default function Page() {
           onChangeText={(email) => setEmailAddress(email)}
           className="w-full bg-transparent border-[#A7A7A7] min-h-14 placeholder:text-[#A7A7A7] rounded-lg text-white"
         />
-        <View className="w-full relative">
+        <View className="w-full relative h-14">
           <Input
             value={password}
             placeholder="Enter password"
@@ -66,16 +78,18 @@ export default function Page() {
             onChangeText={(password) => setPassword(password)}
             className="w-full bg-transparent border-[#A7A7A7] min-h-14 placeholder:text-[#A7A7A7] rounded-lg text-white pr-12"
           />
-          <Pressable
+          <Button
             onPress={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-0 bottom-0 justify-center"
+            className="absolute right-4 top-1/2 -translate-y-1/2 justify-center"
+            variant="ghost"
+            size="icon"
           >
             <Ionicons
               name={showPassword ? "eye-off" : "eye"}
               size={24}
               color="#A7A7A7"
             />
-          </Pressable>
+          </Button>
         </View>
         {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
       </View>

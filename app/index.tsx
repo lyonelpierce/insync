@@ -1,12 +1,11 @@
 import React from "react";
 import { BlurView } from "expo-blur";
-import { Redirect, useRouter } from "expo-router";
 import { View, Text } from "react-native";
-import { useAuth } from "@clerk/clerk-expo";
+import { useConvexAuth } from "convex/react";
 import { ImageBackground } from "react-native";
 import { Button } from "~/components/ui/button";
+import { Redirect, useRouter } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
-import { useConvexAuth } from "convex/react";
 
 const index = () => {
   const router = useRouter();

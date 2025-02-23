@@ -32,6 +32,7 @@ export default function Page() {
 
   const updateTabbar = () => {
     let newMarginBottom = 0;
+
     if (scrollOffset.value >= 0 && scrollOffset.value <= tabBarHeight) {
       newMarginBottom = -scrollOffset.value;
     } else if (scrollOffset.value > tabBarHeight) {

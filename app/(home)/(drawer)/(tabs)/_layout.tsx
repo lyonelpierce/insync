@@ -66,6 +66,7 @@ export default function Layout() {
               </Button>
             </View>
           ),
+
           tabBarBackground: () => (
             <BlurView intensity={30} tint="dark" style={{ flex: 1 }} />
           ),

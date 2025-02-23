@@ -3,10 +3,9 @@ import { Stack } from "expo-router";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
 import BallBg from "~/components/BallBg";
-import { Text } from "~/components/ui/text";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
-import { ChevronLeftIcon, SaveIcon, SquarePen } from "lucide-react-native";
+import { ChevronLeftIcon, SquarePen } from "lucide-react-native";
 
 const _layout = () => {
   const router = useRouter();

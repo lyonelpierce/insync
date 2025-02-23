@@ -11,7 +11,7 @@ import { Link } from "expo-router";
 import { useUser } from "@clerk/clerk-expo";
 import { api } from "~/convex/_generated/api";
 import { Button } from "~/components/ui/button";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, ScrollView } from "react-native";
 import { Doc } from "~/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -84,30 +84,30 @@ export function PostCard({
       </View>
       <Text className="text-[#D9D9D9] text-lg">{post.content}</Text>
       {post.media && post.media.length > 0 && (
-        <View className="flex flex-row flex-wrap">
+        <ScrollView horizontal className="flex flex-row mt-4">
           {post.media.map((mediaId: string | null) => {
             if (!mediaId) return null;
             return (
-              <View key={mediaId} className="w-1/2 p-1">
-                <Link
-                  href={`/(home)/(modal)/image/${encodeURIComponent(mediaId)}`}
-                >
-                  <Image
-                    source={{ uri: mediaId }}
-                    className="w-full h-48 rounded-lg object-cover"
-                    resizeMode="cover"
-                    onError={(error) =>
-                      console.error(
-                        "Image loading error:",
-                        error.nativeEvent.error
-                      )
-                    }
-                  />
-                </Link>
-              </View>
+              <Link
+                key={mediaId}
+                href={`/(home)/(modal)/image/${encodeURIComponent(mediaId)}`}
+                className="mr-4"
+              >
+                <Image
+                  source={{ uri: mediaId }}
+                  className="w-48 h-48 rounded-lg"
+                  resizeMode="cover"
+                  onError={(error) =>
+                    console.error(
+                      "Image loading error:",
+                      error.nativeEvent.error
+                    )
+                  }
+                />
+              </Link>
             );
           })}
-        </View>
+        </ScrollView>
       )}
       <View className="flex flex-row items-center justify-between mt-2">
         <View>

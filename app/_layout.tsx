@@ -11,8 +11,8 @@ import { StatusBar } from "expo-status-bar";
 import { ConvexReactClient } from "convex/react";
 import * as SplashScreen from "expo-splash-screen";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-import { ClerkProvider, ClerkLoaded, useAuth } from "@clerk/clerk-expo";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { ClerkProvider, ClerkLoaded, useAuth } from "@clerk/clerk-expo";
 
 import "react-native-reanimated";
 import "~/global.css";
@@ -63,6 +63,7 @@ export default function RootLayout() {
                 <Stack.Screen name="index" />
                 <Stack.Screen name="(auth)" />
                 <Stack.Screen name="(home)" />
+                <Stack.Screen name="permission" />
                 <Stack.Screen name="+not-found" />
               </Stack>
               <StatusBar style="auto" />
