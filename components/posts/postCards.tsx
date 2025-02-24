@@ -11,9 +11,9 @@ import { Link } from "expo-router";
 import { useUser } from "@clerk/clerk-expo";
 import { api } from "~/convex/_generated/api";
 import { Button } from "~/components/ui/button";
-import { Text, View, Image, ScrollView } from "react-native";
 import { Doc } from "~/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
+import { Text, View, Image, ScrollView } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 export function PostCard({

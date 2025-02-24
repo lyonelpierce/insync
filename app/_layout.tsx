@@ -13,6 +13,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { ClerkProvider, ClerkLoaded, useAuth } from "@clerk/clerk-expo";
+import { SahhaProvider } from "~/providers/SahhaProvider";
 
 import "react-native-reanimated";
 import "~/global.css";
@@ -52,25 +53,27 @@ export default function RootLayout() {
   }
 
   return (
-    <ActionSheetProvider>
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <ClerkLoaded>
-          <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="index" />
-                <Stack.Screen name="(auth)" />
-                <Stack.Screen name="(home)" />
-                <Stack.Screen name="permission" />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <StatusBar style="auto" />
-            </ThemeProvider>
-          </ConvexProviderWithClerk>
-        </ClerkLoaded>
-      </ClerkProvider>
-    </ActionSheetProvider>
+    <SahhaProvider>
+      <ActionSheetProvider>
+        <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+          <ClerkLoaded>
+            <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
+              <ThemeProvider
+                value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+              >
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="index" />
+                  <Stack.Screen name="(auth)" />
+                  <Stack.Screen name="(home)" />
+                  <Stack.Screen name="permission" />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style="auto" />
+              </ThemeProvider>
+            </ConvexProviderWithClerk>
+          </ClerkLoaded>
+        </ClerkProvider>
+      </ActionSheetProvider>
+    </SahhaProvider>
   );
 }

@@ -1,5 +1,5 @@
-import { View, Dimensions, Modal, Pressable, Image } from "react-native";
-import * as Linking from "expo-linking";
+import { useState } from "react";
+import { router } from "expo-router";
 import BallBg from "~/components/BallBg";
 import { Drawer } from "expo-router/drawer";
 import { Text } from "~/components/ui/text";
@@ -7,13 +7,12 @@ import { useClerk } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "~/components/ui/button";
 import { PencilIcon } from "lucide-react-native";
-import { router, usePathname } from "expo-router";
 import { Separator } from "~/components/ui/separator";
 import { useUserProfile } from "~/hooks/useUserProfile";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { View, Dimensions, Modal, Pressable, Image } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useState } from "react";
 
 const CustomDrawerContent = (props: any) => {
   const { signOut } = useClerk();
@@ -30,7 +29,7 @@ const CustomDrawerContent = (props: any) => {
     try {
       await signOut();
       // Redirect to your desired page
-      Linking.openURL(Linking.createURL("/(auth)/landing"));
+      router.push("/(auth)/landing");
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
     }

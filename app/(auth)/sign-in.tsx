@@ -1,17 +1,18 @@
 import React from "react";
 import { cn } from "~/lib/utils";
 import { View } from "react-native";
-import Sahha from "sahha-react-native";
 import { Text } from "~/components/ui/text";
 import { useSignIn } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Input } from "~/components/ui/input";
 import { Link, useRouter } from "expo-router";
 import { Button } from "~/components/ui/button";
+import { useSahha } from "~/providers/SahhaProvider";
 
 export default function Page() {
   const router = useRouter();
   const { signIn, setActive, isLoaded } = useSignIn();
+  const { isAuthenticated, sensorStatus } = useSahha();
 
   const [error, setError] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -32,17 +33,11 @@ export default function Page() {
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
 
-        Sahha.isAuthenticated((error: string, success: boolean) => {
-          console.log(`Success: ${success}`);
-          if (success) {
-            router.replace("/");
-          } else {
-            router.replace("/permission");
-          }
-          if (error) {
-            console.error(`Error: ${error}`);
-          }
-        });
+        if (isAuthenticated && sensorStatus === 3) {
+          router.replace("/");
+        } else {
+          router.replace("/permission");
+        }
       } else {
         setError("Sign in was not completed. Please try again.");
         console.error(JSON.stringify(signInAttempt, null, 2));
