@@ -2,6 +2,8 @@ import Sahha, {
   SahhaSensor,
   SahhaEnvironment,
   SahhaSensorStatus,
+  SahhaBiomarkerType,
+  SahhaBiomarkerCategory,
 } from "sahha-react-native";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
@@ -12,6 +14,11 @@ interface SahhaContextType {
   getSensorStatus: () => void;
   enableSensors: () => void;
   authenticate: (userId: string) => void;
+  getBiomarkers: (
+    type: SahhaBiomarkerType,
+    startDate?: Date,
+    endDate?: Date
+  ) => Promise<any>;
 }
 
 const SahhaContext = createContext<SahhaContextType | undefined>(undefined);
@@ -64,7 +71,7 @@ export function SahhaProvider({ children }: { children: React.ReactNode }) {
 
   const getSensorStatus = () => {
     Sahha.getSensorStatus(
-      [SahhaSensor.steps, SahhaSensor.sleep, SahhaSensor.heart_rate],
+      [SahhaSensor.steps, SahhaSensor.sleep],
       (error: string, value: SahhaSensorStatus) => {
         if (error) {
           console.error(`Error: ${error}`);
@@ -111,6 +118,33 @@ export function SahhaProvider({ children }: { children: React.ReactNode }) {
       }
     );
   };
+  const getBiomarkers = (
+    type: SahhaBiomarkerType,
+    startDate: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    endDate: Date = new Date()
+  ): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      Sahha.getBiomarkers(
+        [
+          SahhaBiomarkerCategory.activity,
+          SahhaBiomarkerCategory.sleep,
+          SahhaBiomarkerCategory.vitals,
+        ],
+        [type],
+        startDate.getTime(),
+        endDate.getTime(),
+        (error: string, value: string) => {
+          if (error) {
+            console.error(`Error: ${error}`);
+            reject(error);
+          } else if (value) {
+            const jsonArray = JSON.parse(value);
+            resolve(jsonArray);
+          }
+        }
+      );
+    });
+  };
 
   return (
     <SahhaContext.Provider
@@ -121,6 +155,7 @@ export function SahhaProvider({ children }: { children: React.ReactNode }) {
         getSensorStatus,
         enableSensors,
         authenticate,
+        getBiomarkers,
       }}
     >
       {children}

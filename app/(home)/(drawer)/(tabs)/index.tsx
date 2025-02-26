@@ -39,9 +39,9 @@ export default function Page() {
       newMarginBottom = -tabBarHeight;
     }
 
-    navigation?.setOptions({
-      tabBarStyle: { marginBottom: newMarginBottom },
-    });
+    // navigation?.setOptions({
+    //   tabBarStyle: { marginBottom: newMarginBottom },
+    // });
   };
 
   const scrollHandler = useAnimatedScrollHandler({
