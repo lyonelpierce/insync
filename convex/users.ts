@@ -174,3 +174,112 @@ async function userByExternalId(ctx: QueryCtx, externalId: string) {
     .withIndex('byClerkId', (q) => q.eq('clerkId', externalId))
     .unique();
 }
+
+export const checkFriendshipStatus = query({
+  args: {
+    userId1: v.id('users'),
+    userId2: v.id('users'),
+  },
+  handler: async (ctx, args) => {
+    // Check if there's a pending friend request
+    const pendingRequest = await ctx.db
+      .query('sync_requests')
+      .filter(q => 
+        q.or(
+          q.and(
+            q.eq(q.field('sender_id'), args.userId1),
+            q.eq(q.field('receiver_id'), args.userId2)
+          ),
+          q.and(
+            q.eq(q.field('sender_id'), args.userId2),
+            q.eq(q.field('receiver_id'), args.userId1)
+          )
+        )
+      )
+      .first();
+
+    if (pendingRequest) {
+      return { status: pendingRequest.status, request: pendingRequest };
+    }
+
+    // Check if they are friends
+    const areFriends = await ctx.db
+      .query('friends')
+      .filter(q =>
+        q.or(
+          q.and(
+            q.eq(q.field('user1_id'), args.userId1),
+            q.eq(q.field('user2_id'), args.userId2)
+          ),
+          q.and(
+            q.eq(q.field('user1_id'), args.userId2),
+            q.eq(q.field('user2_id'), args.userId1)
+          )
+        )
+      )
+      .first();
+
+    return { status: areFriends ? 'friends' : 'none' };
+  },
+});
+
+export const sendFriendRequest = mutation({
+  args: {
+    receiverId: v.id('users'),
+  },
+  handler: async (ctx, args) => {
+    const sender = await getCurrentUserOrThrow(ctx);
+    
+    return await ctx.db.insert('sync_requests', {
+      sender_id: sender._id,
+      receiver_id: args.receiverId,
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    });
+  },
+});
+
+export const respondToFriendRequest = mutation({
+  args: {
+    requestId: v.id('sync_requests'),
+    accept: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const currentUser = await getCurrentUserOrThrow(ctx);
+    const request = await ctx.db.get(args.requestId);
+
+    if (!request || request.receiver_id !== currentUser._id) {
+      throw new Error('Invalid request');
+    }
+
+    if (args.accept) {
+      // Create friendship
+      await ctx.db.insert('friends', {
+        user1_id: request.sender_id,
+        user2_id: request.receiver_id,
+        created_at: new Date().toISOString(),
+      });
+      
+      // Update request status
+      await ctx.db.patch(args.requestId, { status: 'accepted' });
+    } else {
+      await ctx.db.patch(args.requestId, { status: 'declined' });
+    }
+  },
+});
+
+export const cancelFriendRequest = mutation({
+  args: {
+    requestId: v.id('sync_requests'),
+  },
+  handler: async (ctx, args) => {
+    const currentUser = await getCurrentUserOrThrow(ctx);
+    const request = await ctx.db.get(args.requestId);
+
+    if (!request || request.sender_id !== currentUser._id) {
+      throw new Error('Invalid request');
+    }
+
+    await ctx.db.delete(args.requestId);
+  },
+});
