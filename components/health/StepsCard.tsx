@@ -8,7 +8,9 @@ const StepsCard = ({ steps }: { steps: any }) => {
       <FootprintsIcon color="white" size={32} />
       <View className="flex flex-col items-center">
         <Text className="text-white text-lg font-medium">Steps</Text>
-        <Text className="text-white text-lg font-medium">{steps[0].value}</Text>
+        <Text className="text-white text-lg font-medium">
+          {steps[0]?.value}
+        </Text>
       </View>
     </View>
   );

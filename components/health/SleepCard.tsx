@@ -3,8 +3,6 @@ import { View, Text } from "react-native";
 import { BedSingleIcon } from "lucide-react-native";
 
 const SleepCard = ({ steps }: { steps: any }) => {
-  console.log(steps);
-
   return (
     <View className="p-4 bg-[#353D48]/25 rounded-3xl w-full flex flex-row items-center justify-between">
       <BedSingleIcon color="white" size={32} />
