@@ -11,7 +11,12 @@ import { PostCard } from "~/components/posts/postCards";
 import { runOnJS, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
+import Animated, {
+  useAnimatedScrollHandler,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { useAnimationContext } from "~/app/context/animation-context";
 
 export default function Page() {
   const [refreshing, setRefreshing] = useState(false);
@@ -21,6 +26,9 @@ export default function Page() {
   const scrollOffset = useSharedValue(0);
   const tabBarHeight = useBottomTabBarHeight();
   const isFocused = useIsFocused();
+
+  const { headerTranslateY } = useAnimationContext();
+  const lastScrollY = useSharedValue(0);
 
   const { results, loadMore } = usePaginatedQuery(
     api.posts.getPosts,
@@ -39,13 +47,26 @@ export default function Page() {
       newMarginBottom = -tabBarHeight;
     }
 
-    // navigation?.setOptions({
-    //   tabBarStyle: { marginBottom: newMarginBottom },
-    // });
+    navigation?.setOptions({
+      tabBarStyle: { marginBottom: newMarginBottom },
+    });
   };
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
+      const currentScrollY = event.contentOffset.y;
+      const scrollDiff = currentScrollY - lastScrollY.value;
+
+      if (scrollDiff > 0 && currentScrollY > 50) {
+        // Scrolling down - hide header
+        headerTranslateY.value = withTiming(-100, { duration: 250 });
+      } else if (scrollDiff < 0) {
+        // Only show header when explicitly scrolling up
+        headerTranslateY.value = withTiming(0, { duration: 250 });
+      }
+
+      lastScrollY.value = currentScrollY;
+
       if (isFocused) {
         scrollOffset.value = event.contentOffset.y;
         runOnJS(updateTabbar)();
@@ -86,6 +107,7 @@ export default function Page() {
         onEndReached={onLoadmore}
         onEndReachedThreshold={0.5}
         renderItem={({ item }) => <PostCard post={item} />}
+        contentContainerStyle={{ paddingVertical: top + 24 }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
